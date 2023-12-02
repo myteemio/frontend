@@ -4,7 +4,9 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { teemioTheme } from '@/styling/theme';
+import Navbar from '@/components/navbar.component';
 
 export const metadata: Metadata = {
   title: 'Teemio',
@@ -15,12 +17,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <CssBaseline />
-      <html lang="en">
-        <head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </head>
-        <body>{children}</body>
-      </html>
+      <ThemeProvider theme={teemioTheme}>
+        <html lang="en">
+          <head>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </head>
+          <body>
+            <div className="navbar">
+              <Navbar />
+            </div>
+            <div className="bodycontent">{children}</div>
+          </body>
+        </html>
+      </ThemeProvider>
     </>
   );
 }
