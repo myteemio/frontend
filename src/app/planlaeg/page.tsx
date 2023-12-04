@@ -2,47 +2,100 @@
 import { Activity } from '@/components/Activity.component';
 import { Draggable } from '@/components/Draggable.component';
 import { Droppable } from '@/components/Droppable.component';
-import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { createSnapModifier } from '@dnd-kit/modifiers';
 import { Box, Grid, Typography } from '@mui/material';
 import { useState } from 'react';
 
 export default function Planlaeg() {
-  const activities = Array.from(Array(9).keys());
-
-  const [addedActivities, setAddedActivities] = useState<number[]>([]);
-  const [isDropped, setIsDropped] = useState(false);
+  const allActivites = [
+    {
+      name: 'Gokart Amager',
+      price: 249,
+      id: 1,
+    },
+    {
+      name: 'Cooking Class KBH',
+      price: 299,
+      id: 2,
+    },
+    {
+      name: 'Escape Room',
+      price: 399,
+      id: 3,
+    },
+    {
+      name: 'Vinsmagning',
+      price: 599,
+      id: 4,
+    },
+  ];
+  const [activities, setActivities] = useState<{ name: string; price: number; id: number }[]>(allActivites);
+  const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number }[]>([]);
+  const [activeId, setActiveId] = useState(-1);
 
   const gridSize = 20; // pixels
   const snapToGridModifier = createSnapModifier(gridSize);
 
   function handleDragEnd(event: DragEndEvent) {
+    setActiveId(-1);
     const { over, active } = event;
 
-    console.log(event);
-
-    if (over) {
-      if (over.id === 'droppable') {
-        setIsDropped(true);
-        if (active.id) {
-          console.log(active.id);
-          setAddedActivities([...addedActivities, (active.id as number) + 10]);
-          console.log(addedActivities);
+    if (over && over.id === 'droppable') {
+      // Dropped into droppable
+      if (active && active.id) {
+        const findActive = activities.findIndex((v) => v.id === active.id);
+        if (findActive !== -1) {
+          setActivities(activities.toSpliced(findActive, 1));
+          setAddedActivities([...addedActivities, activities[findActive]]);
         }
       }
     } else {
-      const findItem = addedActivities.findIndex((e) => e === (active.id as number) + 10);
-      if (findItem >= 0) {
-        const newArray = addedActivities.splice(findItem, 1);
-        console.log('FoundItem:' + findItem);
-        console.log('NewArray' + newArray);
-        setAddedActivities(newArray);
+      // There is no over
+      if (active && active.id) {
+        const foundActivity = addedActivities.findIndex((v) => v.id + 5000 === (active.id as number));
+
+        if (foundActivity !== -1) {
+          const foundActivityToReAdd = allActivites.find((v) => v.id + 5000 === (active.id as number));
+          if (foundActivityToReAdd) {
+            setActivities([...activities, foundActivityToReAdd]);
+          }
+
+          setAddedActivities(addedActivities.toSpliced(foundActivity, 1));
+        }
       }
     }
+
+    console.log(event);
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(event.active.id as number);
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd} modifiers={[snapToGridModifier]}>
+    <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+      <DragOverlay>
+        {activeId !== -1
+          ? (() => {
+              const activity = allActivites.find((v) => v.id === activeId);
+              if (activity) {
+                return (
+                  <Box width={'700px'}>
+                    <Activity
+                      draggable={false}
+                      isDragged={false}
+                      id={activity.id + 9000}
+                      title={activity.name}
+                      price={activity.price}
+                      placeholder={false}
+                    />
+                  </Box>
+                );
+              }
+            })()
+          : null}
+      </DragOverlay>
       <Box width={'80%'} marginLeft={'auto'} marginRight={'auto'} paddingBottom={4}>
         <Box marginTop={6} marginBottom={6}>
           <Typography variant="h4" fontWeight={'bold'}>
@@ -65,9 +118,19 @@ export default function Planlaeg() {
             >
               <Box width={'80%'} height={'80%'} sx={{ background: 'purple' }}>
                 <Droppable>
-                  {isDropped
+                  {addedActivities.length > 0
                     ? addedActivities.map((v, i) => {
-                        return <Activity draggable={true} key={i} id={i} />;
+                        return (
+                          <Activity
+                            draggable={true}
+                            isDragged={true}
+                            key={i}
+                            id={v.id + 5000}
+                            title={v.name}
+                            price={v.price}
+                            placeholder={false}
+                          />
+                        );
                       })
                     : 'Drop here'}
                 </Droppable>
@@ -89,9 +152,21 @@ export default function Planlaeg() {
               flexWrap={'wrap'}
               gap={2}
             >
-              {activities.map((v, i) => {
-                return <Activity draggable key={i} id={v + 1} />;
-              })}
+              {activities
+                .sort((a, b) => a.id - b.id)
+                .map((v, i) => {
+                  return (
+                    <Activity
+                      draggable
+                      isDragged={false}
+                      key={i}
+                      id={v.id}
+                      title={v.name}
+                      price={v.price}
+                      placeholder={activeId === v.id ? true : false}
+                    />
+                  );
+                })}
             </Box>
           </Grid>
         </Grid>
