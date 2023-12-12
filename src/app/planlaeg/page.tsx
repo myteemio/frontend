@@ -1,11 +1,18 @@
 'use client';
 import { Activity } from '@/components/Activity.component';
-import { Draggable } from '@/components/Draggable.component';
 import { Droppable } from '@/components/Droppable.component';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
-import { createSnapModifier } from '@dnd-kit/modifiers';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  UniqueIdentifier,
+  pointerWithin,
+} from '@dnd-kit/core';
+import { createSnapModifier, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { Box, Grid, Typography } from '@mui/material';
-import { useState } from 'react';
+import { TransitionEvent, useState } from 'react';
 
 export default function Planlaeg() {
   const allActivites = [
@@ -33,9 +40,7 @@ export default function Planlaeg() {
   const [activities, setActivities] = useState<{ name: string; price: number; id: number }[]>(allActivites);
   const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number }[]>([]);
   const [activeId, setActiveId] = useState(-1);
-
-  const gridSize = 20; // pixels
-  const snapToGridModifier = createSnapModifier(gridSize);
+  const [modifiers, setModifiers] = useState<any[]>([]);
 
   function handleDragEnd(event: DragEndEvent) {
     setActiveId(-1);
@@ -65,27 +70,89 @@ export default function Planlaeg() {
         }
       }
     }
-
-    console.log(event);
   }
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as number);
   }
+  function handleDragOver(event: DragOverEvent) {
+    if (event.over) {
+      setModifiers([snapToGrid]);
+      const element = document.querySelectorAll("[data-activityid='" + event.active.id + "']");
+      if (element.length > 0) {
+        const firstElement = element[0];
+        const droppableArea = document.getElementById('droppablecontainer');
+        if (droppableArea) {
+          firstElement.setAttribute('style', `width: ${droppableArea.clientWidth}px`);
+          if (firstElement.children.length > 0) {
+            const image = firstElement.querySelector('[data-activityimagecontainer]');
+
+            if (image) {
+              image.setAttribute('style', 'visibility: hidden; height: 0px;');
+            }
+          }
+        }
+      }
+    } else {
+      setModifiers([]);
+      const element = document.querySelectorAll("[data-activityid='" + event.active.id + "']");
+      if (element.length > 0) {
+        const firstElement = element[0];
+        const placeholderWhileDropped = document.querySelectorAll(
+          "[data-activityid='" + event.active.id + "'][data-placeholder='true']"
+        );
+
+        if (placeholderWhileDropped.length > 0) {
+          const image = firstElement.querySelector('[data-activityimagecontainer]');
+
+          if (image) {
+            image.setAttribute('style', 'visibility: visible; height: 80px;');
+          }
+          firstElement.setAttribute('style', `width: ${placeholderWhileDropped[0].clientWidth}px`);
+        }
+      }
+    }
+  }
+
+  const gridSize = 25; // pixels
+  function snapToGrid(args: any) {
+    const foundContainer = document.getElementById('droppablecontainer');
+
+    if (!foundContainer) return;
+
+    const containerWidth = foundContainer.clientWidth;
+    const containerHeight = foundContainer.clientHeight;
+    const containerX = foundContainer.clientLeft;
+    const containerY = foundContainer.clientTop;
+
+    const { transform } = args;
+
+    return {
+      ...transform,
+      x: Math.ceil(transform.x / gridSize) * gridSize - 2.5,
+      y: Math.ceil(transform.y / gridSize) * gridSize - 5,
+    };
+  }
 
   return (
-    <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-      <DragOverlay>
+    <DndContext
+      collisionDetection={pointerWithin}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragStart={handleDragStart}
+      modifiers={[]}
+    >
+      <DragOverlay modifiers={modifiers}>
         {activeId !== -1
           ? (() => {
               const activity = allActivites.find((v) => v.id === activeId);
               if (activity) {
                 return (
-                  <Box width={'700px'}>
+                  <Box width={'1000px'}>
                     <Activity
                       draggable={false}
                       isDragged={false}
-                      id={activity.id + 9000}
+                      id={activity.id}
                       title={activity.name}
                       price={activity.price}
                       placeholder={false}
@@ -116,7 +183,7 @@ export default function Planlaeg() {
               alignItems={'center'}
               sx={{ backgroundColor: 'green' }}
             >
-              <Box width={'80%'} height={'80%'} sx={{ background: 'purple' }}>
+              <Box width={400} height={800} sx={{ background: 'purple' }} id="droppablecontainer">
                 <Droppable>
                   {addedActivities.length > 0
                     ? addedActivities.map((v, i) => {
@@ -157,7 +224,7 @@ export default function Planlaeg() {
                 .map((v, i) => {
                   return (
                     <Activity
-                      draggable
+                      draggable={true}
                       isDragged={false}
                       key={i}
                       id={v.id}

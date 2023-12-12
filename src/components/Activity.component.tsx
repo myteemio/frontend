@@ -30,15 +30,23 @@ export const Activity = ({
     width: '30%',
     backgroundColor: '#d9d9d9',
     ...(draggable ? draggableStyle : {}),
+    transition: !isDragged ? 'all 0.5s ease' : '',
   };
 
   if (placeholder) {
-    return <Skeleton sx={{ ...cardStyle, height: '320px' }}></Skeleton>;
+    return (
+      <Skeleton sx={{ ...cardStyle, height: '320px' }} data-activityid={id} data-placeholder={placeholder}></Skeleton>
+    );
   } else {
     return (
-      <Card sx={cardStyle} {...(draggable ? { ref: setNodeRef, ...listeners, ...attributes } : {})} aria-describedby="">
+      <Card
+        sx={cardStyle}
+        {...(draggable ? { ref: setNodeRef, ...listeners, ...attributes } : {})}
+        aria-describedby=""
+        data-activityid={id}
+      >
         <CardContent>
-          <Box position={'relative'} width={'100%'} height={80}>
+          <Box position={'relative'} width={'100%'} height={80} data-activityimagecontainer>
             <Image
               src={'/images/activity.jpeg'}
               alt="Activity image"
