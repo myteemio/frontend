@@ -9,6 +9,8 @@ export const Activity = ({
   id,
   isDragged,
   placeholder,
+  dropped,
+  top,
 }: {
   draggable: boolean;
   title: string;
@@ -16,6 +18,8 @@ export const Activity = ({
   id: number;
   isDragged: boolean;
   placeholder: boolean;
+  dropped: boolean;
+  top: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
@@ -27,7 +31,8 @@ export const Activity = ({
   };
 
   const cardStyle = {
-    width: '30%',
+    marginTop: top,
+    width: dropped ? '100%' : '30%',
     backgroundColor: '#d9d9d9',
     ...(draggable ? draggableStyle : {}),
     transition: !isDragged ? 'all 0.5s ease' : '',
@@ -35,7 +40,12 @@ export const Activity = ({
 
   if (placeholder) {
     return (
-      <Skeleton sx={{ ...cardStyle, height: '320px' }} data-activityid={id} data-placeholder={placeholder}></Skeleton>
+      <Skeleton
+        variant="rectangular"
+        sx={{ ...cardStyle, height: '192px' }}
+        data-activityid={id}
+        data-placeholder={placeholder}
+      ></Skeleton>
     );
   } else {
     return (
@@ -46,14 +56,16 @@ export const Activity = ({
         data-activityid={id}
       >
         <CardContent>
-          <Box position={'relative'} width={'100%'} height={80} data-activityimagecontainer>
-            <Image
-              src={'/images/activity.jpeg'}
-              alt="Activity image"
-              fill
-              style={{ objectFit: 'cover', objectPosition: 'center' }}
-            />
-          </Box>
+          {!dropped && (
+            <Box position={'relative'} width={'100%'} height={80} data-activityimagecontainer>
+              <Image
+                src={'/images/activity.jpeg'}
+                alt="Activity image"
+                fill
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+              />
+            </Box>
+          )}
           <Typography variant="h6" marginTop={2}>
             {title}
           </Typography>

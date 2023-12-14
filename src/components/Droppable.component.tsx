@@ -13,11 +13,11 @@ export function Droppable(props: any) {
     display: 'flex',
     gap: '10px',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   };
 
   return (
-    <div ref={setNodeRef} style={{ ...style, flexWrap: 'wrap' }}>
+    <div ref={setNodeRef} style={{ ...style, flexWrap: 'wrap', flexDirection: 'column' }}>
       {props.children}
     </div>
   );

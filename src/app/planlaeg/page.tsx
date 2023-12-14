@@ -20,30 +20,38 @@ export default function Planlaeg() {
       name: 'Gokart Amager',
       price: 249,
       id: 1,
+      top: '0px',
     },
     {
       name: 'Cooking Class KBH',
       price: 299,
       id: 2,
+      top: '0px',
     },
     {
       name: 'Escape Room',
       price: 399,
       id: 3,
+      top: '0px',
     },
     {
       name: 'Vinsmagning',
       price: 599,
       id: 4,
+      top: '0px',
     },
   ];
-  const [activities, setActivities] = useState<{ name: string; price: number; id: number }[]>(allActivites);
-  const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number }[]>([]);
+  const [activities, setActivities] =
+    useState<{ name: string; price: number; id: number; top: string }[]>(allActivites);
+  const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number; top: string }[]>(
+    []
+  );
   const [activeId, setActiveId] = useState(-1);
   const [modifiers, setModifiers] = useState<any[]>([]);
 
   function handleDragEnd(event: DragEndEvent) {
     setActiveId(-1);
+    setModifiers([]);
     const { over, active } = event;
 
     if (over && over.id === 'droppable') {
@@ -51,8 +59,10 @@ export default function Planlaeg() {
       if (active && active.id) {
         const findActive = activities.findIndex((v) => v.id === active.id);
         if (findActive !== -1) {
+          console.log(event);
+          const toAdd = { ...activities[findActive], top: `${event.delta.y}px` };
           setActivities(activities.toSpliced(findActive, 1));
-          setAddedActivities([...addedActivities, activities[findActive]]);
+          setAddedActivities([...addedActivities, toAdd]);
         }
       }
     } else {
@@ -114,23 +124,14 @@ export default function Planlaeg() {
     }
   }
 
-  const gridSize = 25; // pixels
+  const gridSize = 30; // pixels
   function snapToGrid(args: any) {
-    const foundContainer = document.getElementById('droppablecontainer');
-
-    if (!foundContainer) return;
-
-    const containerWidth = foundContainer.clientWidth;
-    const containerHeight = foundContainer.clientHeight;
-    const containerX = foundContainer.clientLeft;
-    const containerY = foundContainer.clientTop;
-
-    const { transform } = args;
+    const { over, transform } = args;
 
     return {
       ...transform,
-      x: Math.ceil(transform.x / gridSize) * gridSize - 2.5,
-      y: Math.ceil(transform.y / gridSize) * gridSize - 5,
+      x: Math.ceil(transform.x / gridSize) * gridSize,
+      y: Math.ceil(transform.y / gridSize) * gridSize,
     };
   }
 
@@ -148,7 +149,7 @@ export default function Planlaeg() {
               const activity = allActivites.find((v) => v.id === activeId);
               if (activity) {
                 return (
-                  <Box width={'1000px'}>
+                  <Box width={'700px'}>
                     <Activity
                       draggable={false}
                       isDragged={false}
@@ -156,6 +157,8 @@ export default function Planlaeg() {
                       title={activity.name}
                       price={activity.price}
                       placeholder={false}
+                      dropped={false}
+                      top={'0px'}
                     />
                   </Box>
                 );
@@ -196,6 +199,8 @@ export default function Planlaeg() {
                             title={v.name}
                             price={v.price}
                             placeholder={false}
+                            dropped={true}
+                            top={v.top}
                           />
                         );
                       })
@@ -231,6 +236,8 @@ export default function Planlaeg() {
                       title={v.name}
                       price={v.price}
                       placeholder={activeId === v.id ? true : false}
+                      dropped={false}
+                      top={'0px'}
                     />
                   );
                 })}
