@@ -1,0 +1,16 @@
+.droppablecontainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(24, 1fr);
+  width: 100%;
+}
+
+.item {
+  background-color: lightgrey;
+  height: 30px;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0px;
+  font-size: 12px;
+  line-height: 30px;
+}

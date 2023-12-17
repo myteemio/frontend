@@ -13,6 +13,7 @@ import {
 import { createSnapModifier, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { Box, Grid, Typography } from '@mui/material';
 import { TransitionEvent, useState } from 'react';
+import styles from './page.module.css';
 
 export default function Planlaeg() {
   const allActivites = [
@@ -41,6 +42,46 @@ export default function Planlaeg() {
       top: '0px',
     },
   ];
+
+  const timeSlots = [
+    { from: '06:00', to: '06:30' },
+    { from: '06:30', to: '07:00' },
+    { from: '07:00', to: '07:30' },
+    { from: '07:30', to: '08:00' },
+    { from: '08:00', to: '08:30' },
+    { from: '08:30', to: '09:00' },
+    { from: '09:00', to: '09:30' },
+    { from: '09:30', to: '10:00' },
+    { from: '10:00', to: '10:30' },
+    { from: '10:30', to: '11:00' },
+    { from: '11:00', to: '11:30' },
+    { from: '11:30', to: '12:00' },
+    { from: '12:00', to: '12:30' },
+    { from: '12:30', to: '13:00' },
+    { from: '13:00', to: '13:30' },
+    { from: '13:30', to: '14:00' },
+    { from: '14:00', to: '14:30' },
+    { from: '14:30', to: '15:00' },
+    { from: '15:00', to: '15:30' },
+    { from: '15:30', to: '16:00' },
+    { from: '16:00', to: '16:30' },
+    { from: '16:30', to: '17:00' },
+    { from: '17:00', to: '17:30' },
+    { from: '17:30', to: '18:00' },
+    { from: '18:00', to: '18:30' },
+    { from: '18:30', to: '19:00' },
+    { from: '19:00', to: '19:30' },
+    { from: '19:30', to: '20:00' },
+    { from: '20:00', to: '20:30' },
+    { from: '20:30', to: '21:00' },
+    { from: '21:00', to: '21:30' },
+    { from: '21:30', to: '22:00' },
+    { from: '22:00', to: '22:30' },
+    { from: '22:30', to: '23:00' },
+    { from: '23:00', to: '23:30' },
+    { from: '23:30', to: '24:00' },
+  ];
+
   const [activities, setActivities] =
     useState<{ name: string; price: number; id: number; top: string }[]>(allActivites);
   const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number; top: string }[]>(
@@ -128,6 +169,8 @@ export default function Planlaeg() {
   function snapToGrid(args: any) {
     const { over, transform } = args;
 
+    console.log(args);
+
     return {
       ...transform,
       x: Math.ceil(transform.x / gridSize) * gridSize,
@@ -158,7 +201,6 @@ export default function Planlaeg() {
                       price={activity.price}
                       placeholder={false}
                       dropped={false}
-                      top={'0px'}
                     />
                   </Box>
                 );
@@ -186,25 +228,15 @@ export default function Planlaeg() {
               alignItems={'center'}
               sx={{ backgroundColor: 'green' }}
             >
-              <Box width={400} height={800} sx={{ background: 'purple' }} id="droppablecontainer">
+              <Box width={400} sx={{ background: 'purple' }} id="droppablecontainer">
                 <Droppable>
-                  {addedActivities.length > 0
-                    ? addedActivities.map((v, i) => {
-                        return (
-                          <Activity
-                            draggable={true}
-                            isDragged={true}
-                            key={i}
-                            id={v.id + 5000}
-                            title={v.name}
-                            price={v.price}
-                            placeholder={false}
-                            dropped={true}
-                            top={v.top}
-                          />
-                        );
-                      })
-                    : 'Drop here'}
+                  <Box className={styles.droppablecontainer}>
+                    {timeSlots.map((v, i) => (
+                      <Box className={styles.item} key={i}>
+                        {v.from} - {v.to}
+                      </Box>
+                    ))}
+                  </Box>
                 </Droppable>
               </Box>
             </Box>
@@ -237,7 +269,6 @@ export default function Planlaeg() {
                       price={v.price}
                       placeholder={activeId === v.id ? true : false}
                       dropped={false}
-                      top={'0px'}
                     />
                   );
                 })}

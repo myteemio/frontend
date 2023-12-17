@@ -10,7 +10,6 @@ export const Activity = ({
   isDragged,
   placeholder,
   dropped,
-  top,
 }: {
   draggable: boolean;
   title: string;
@@ -19,7 +18,6 @@ export const Activity = ({
   isDragged: boolean;
   placeholder: boolean;
   dropped: boolean;
-  top: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
@@ -31,7 +29,6 @@ export const Activity = ({
   };
 
   const cardStyle = {
-    marginTop: top,
     width: dropped ? '100%' : '30%',
     backgroundColor: '#d9d9d9',
     ...(draggable ? draggableStyle : {}),
