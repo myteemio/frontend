@@ -1,0 +1,30 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.leftside {
+  padding: 20px;
+  width: 50%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: yellowgreen;
+}
+
+.rightside {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 50%;
+  height: 100%;
+  background-color: green;
+}
+
+.droppableAreas {
+  width: 100%;
+  height: 100%;
+}
