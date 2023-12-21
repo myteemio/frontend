@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import styles from './page.module.css';
 import {
   DndContext,
@@ -13,90 +13,120 @@ import {
   DragMoveEvent,
 } from '@dnd-kit/core';
 
-type AddedActivity = {
+type AddedActivityT = {
   id: string;
   top: number;
   height: number;
 };
 
+type AdjustedActivitiesT = AddedActivityT & {
+  overlap: boolean;
+  overlapCount: number;
+  isIncorrect: boolean;
+  leftOffset: number;
+};
+
 export default function Test() {
-  const [activeId, setActiveId] = useState<string>('');
+  const [activeElement, setActiveElement] = useState<AddedActivityT>();
   const [activities, setActivities] = useState<string[]>(['1']);
-  const [addedActivities, setAddedActivities] = useState<AddedActivity[]>([
+  const [adjustedActivities, setAdjustedActivities] = useState<AdjustedActivitiesT[]>([]);
+  const [addedActivities, setAddedActivities] = useState<AddedActivityT[]>([
     {
       id: '2',
       top: 0,
-      height: 24,
+      height: 10,
     },
     {
       id: '3',
       top: 0,
-      height: 24,
+      height: 10,
     },
   ]);
 
-  function adjustActivityPositions(activities: AddedActivity[]) {
-    let adjustedActivities = activities.map((activity) => ({
-      ...activity,
-      overlap: false,
-      overlapCount: 0,
-      isIncorrect: false,
-      leftOffset: 0,
-    }));
+  useEffect(() => {
+    function adjustActivityPositions(activities: AddedActivityT[]): AdjustedActivitiesT[] {
+      let adjustedActivities = activities.map((activity) => ({
+        ...activity,
+        overlap: false,
+        overlapCount: 0,
+        isIncorrect: false,
+        leftOffset: 0,
+      }));
 
-    // Calculate overlap and overlapCount for each activity
-    for (let i = 0; i < adjustedActivities.length; i++) {
-      for (let j = i + 1; j < adjustedActivities.length; j++) {
-        if (activitiesOverlap(adjustedActivities[i], adjustedActivities[j])) {
-          adjustedActivities[i].overlap = true;
-          adjustedActivities[j].overlap = true;
-          adjustedActivities[i].overlapCount += 1;
-          adjustedActivities[j].overlapCount += 1;
-        }
-      }
-    }
-
-    // Identify activities that overlap more elements than the ones they are overlapped with
-    adjustedActivities.forEach((activity) => {
-      for (let otherActivity of adjustedActivities) {
-        if (activity !== otherActivity && activitiesOverlap(activity, otherActivity)) {
-          if (activity.overlapCount > otherActivity.overlapCount) {
-            activity.isIncorrect = true;
-            break; // Break as soon as one incorrect overlap is found
+      // Calculate overlap and overlapCount for each activity
+      for (let i = 0; i < adjustedActivities.length; i++) {
+        for (let j = i + 1; j < adjustedActivities.length; j++) {
+          if (activitiesOverlap(adjustedActivities[i], adjustedActivities[j])) {
+            adjustedActivities[i].overlap = true;
+            adjustedActivities[j].overlap = true;
+            adjustedActivities[i].overlapCount += 1;
+            adjustedActivities[j].overlapCount += 1;
           }
         }
       }
-    });
 
-    // Calculate the leftOffset for each item
-    adjustedActivities.forEach((activity, index) => {
-      if (activity.overlap) {
-        activity.leftOffset = calculateLeftOffset(adjustedActivities, index, activity.overlapCount);
-      }
-    });
+      // Identify activities that overlap more elements than the ones they are overlapped with
+      adjustedActivities.forEach((activity) => {
+        for (let otherActivity of adjustedActivities) {
+          if (activity !== otherActivity && activitiesOverlap(activity, otherActivity)) {
+            if (activity.overlapCount > otherActivity.overlapCount) {
+              activity.isIncorrect = true;
+              break; // Break as soon as one incorrect overlap is found
+            }
+          }
+        }
+      });
 
-    return adjustedActivities;
-  }
+      // Calculate the leftOffset for each item
+      adjustedActivities.forEach((activity, index) => {
+        if (activity.overlap) {
+          activity.leftOffset = calculateLeftOffset(adjustedActivities, index, activity.overlapCount);
+        }
+      });
 
-  function activitiesOverlap(activity1: AddedActivity, activity2: AddedActivity): boolean {
-    // Assuming overlap logic based on vertical positioning
-    return (
-      (activity1.top < activity2.top + activity2.height && activity1.top + activity1.height > activity2.top) ||
-      (activity2.top < activity1.top + activity1.height && activity2.top + activity2.height > activity1.top)
-    );
-  }
-
-  function calculateLeftOffset(activities: AddedActivity[], index: number, overlapCount: number): number {
-    let order = 0; // Determine the order of the current activity among overlapping activities
-    for (let i = 0; i < index; i++) {
-      if (activitiesOverlap(activities[i], activities[index])) {
-        order++;
-      }
+      return adjustedActivities;
     }
 
-    // Calculate left offset as a percentage based on order and overlap count
-    return (100 / (overlapCount + 1) + (order > 1 ? overlapCount * 1 - 1 : 1)) * order;
-  }
+    function activitiesOverlap(activity1: AddedActivityT, activity2: AddedActivityT): boolean {
+      // TODO: Use the location of the activity to get the container height...
+      const container = document.getElementById('activitytimeslotsdroppable');
+
+      if (!container) {
+        return false;
+      }
+
+      const containerHeight = container.clientHeight;
+
+      // Convert top and height from pixels to percentage of container height
+      const activity1TopPercent = (activity1.top / containerHeight) * 100;
+      const activity1HeightPercent = (activity1.height / containerHeight) * 100;
+
+      const activity2TopPercent = (activity2.top / containerHeight) * 100;
+      const activity2HeightPercent = (activity2.height / containerHeight) * 100;
+
+      // Check for overlap using percentages
+      return (
+        (activity1TopPercent < activity2TopPercent + activity2HeightPercent &&
+          activity1TopPercent + activity1HeightPercent > activity2TopPercent) ||
+        (activity2TopPercent < activity1TopPercent + activity1HeightPercent &&
+          activity2TopPercent + activity2HeightPercent > activity1TopPercent)
+      );
+    }
+
+    function calculateLeftOffset(activities: AddedActivityT[], index: number, overlapCount: number): number {
+      let order = 0; // Determine the order of the current activity among overlapping activities
+      for (let i = 0; i < index; i++) {
+        if (activitiesOverlap(activities[i], activities[index])) {
+          order++;
+        }
+      }
+
+      // Calculate left offset as a percentage based on order and overlap count
+      return (100 / (overlapCount + 1) + (order > 1 ? overlapCount * 1 - 1 : 1)) * order;
+    }
+
+    setAdjustedActivities(adjustActivityPositions(addedActivities));
+  }, [addedActivities]);
 
   return (
     <div className={styles.container}>
@@ -119,19 +149,19 @@ export default function Test() {
               position: 'relative',
             }}
           >
-            {adjustActivityPositions(addedActivities).map((item, i) => (
+            {adjustedActivities.map((item, i) => (
               <ActivityDropped
                 key={i}
                 id={item.id}
                 style={{
                   position: 'absolute',
                   width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
-                  height: item.height,
-                  top: item.top > 0 ? `${item.top}px` : `0px`,
+                  height: `${item.height}%`,
+                  top: item.top > 0 ? `${item.top}%` : `0%`,
                   left: `${item.leftOffset}%`,
                   border: item.isIncorrect ? '1px solid red' : 'none',
                 }}
-                isPlaceholder={activeId === item.id}
+                isPlaceholder={activeElement?.id === item.id}
               />
             ))}
           </ActivityTimeslotsDroppable>
@@ -139,11 +169,18 @@ export default function Test() {
         <div className={styles.rightside}>
           <ActivityDroppable>
             {activities.map((id, i) => (
-              <Activity key={i} id={id} isPlaceholder={activeId === id}></Activity>
+              <Activity style={{}} key={i} id={id} isPlaceholder={activeElement?.id === id}></Activity>
             ))}
           </ActivityDroppable>
-          <DragOverlay>{activeId != '' ? <Activity id={`drag-${activeId}`} /> : undefined}</DragOverlay>
         </div>
+        <DragOverlay style={{ height: '100%' }}>
+          {activeElement ? (
+            <Activity
+              style={{ height: activeElement.height > 0 ? `${activeElement.height}%` : 'auto' }}
+              id={`drag-${activeElement.id}`}
+            />
+          ) : undefined}
+        </DragOverlay>
       </DndContext>
     </div>
   );
@@ -162,16 +199,42 @@ export default function Test() {
   }
 
   function handleDragStart(event: DragStartEvent) {
-    setActiveId(event.active.id.toString());
+    if (event.active.data.current) {
+      const loc = event.active.data.current.location;
+      if (loc === 'activitytimeslotsdroppable') {
+        // Item dropped already. Look at the addedactivities
+        const foundItem = addedActivities.find((v) => v.id === event.active.id);
+        if (foundItem) {
+          setActiveElement(foundItem);
+          return;
+        }
+      }
+
+      if (loc === 'activitydroppable') {
+        // Item still in activity list. Look at the activites list.
+        const foundItem = activities.find((v) => v === event.active.id);
+
+        if (foundItem) {
+          setActiveElement({
+            id: foundItem,
+            height: 0,
+            top: 0,
+          });
+          return;
+        }
+      }
+    }
+
+    console.log('No item found on drag start');
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    console.log(event);
+    //console.log(event);
 
     // Default stuff
     document.getElementById('activitydroppable')?.style.setProperty('border', 'none');
     document.getElementById('activitytimeslotsdroppable')?.style.setProperty('border', 'none');
-    setActiveId('');
+    setActiveElement(undefined);
     const { over, active } = event;
 
     if (!over) return;
@@ -181,13 +244,17 @@ export default function Test() {
     const overElement = document.getElementById(over.id as string);
     let relativeTopPosition = -1;
     if (draggedDOMelement && overElement) {
-      const draggedElementPosition = draggedDOMelement.getBoundingClientRect();
+      const draggedElementRect = draggedDOMelement.getBoundingClientRect();
       const overElementRect = overElement.getBoundingClientRect();
 
-      // Calculate relative top position
-      relativeTopPosition = draggedElementPosition.top - overElementRect.top;
-      // Use this position to find out WHERE inside the over element it was placed.
-      // Then set the top margin accordingly.
+      // Calculate the difference in top positions
+      const topDifference = draggedElementRect.top - overElementRect.top;
+
+      // Get the height of the overElement
+      const overElementHeight = overElementRect.height;
+
+      // Convert the top difference to a percentage of the overElement's height
+      relativeTopPosition = (topDifference / overElementHeight) * 100;
     }
 
     // check if its dropped over itself
@@ -230,7 +297,7 @@ export default function Test() {
           ...items,
           {
             id: active.id.toString(),
-            height: 24,
+            height: 10,
             top: relativeTopPosition,
           },
         ];
@@ -306,7 +373,15 @@ function ActivityDroppable({ children }: { children: ReactNode }) {
   );
 }
 
-function Activity({ id, isPlaceholder = false }: { id: string; isPlaceholder?: boolean }) {
+function Activity({
+  id,
+  style,
+  isPlaceholder = false,
+}: {
+  id: string;
+  style: React.CSSProperties;
+  isPlaceholder?: boolean;
+}) {
   const { setNodeRef, listeners, attributes } = useDraggable({
     id: id,
     data: {
@@ -314,13 +389,14 @@ function Activity({ id, isPlaceholder = false }: { id: string; isPlaceholder?: b
     },
   });
 
-  const style: any = {
+  const internalstyle: any = {
     background: isPlaceholder ? 'lightgray' : 'white',
     boxSizing: isPlaceholder ? 'border-box' : '',
+    ...style,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes} id={id}>
+    <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes} id={id}>
       <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>Activity to drop {id}</p>
     </div>
   );
