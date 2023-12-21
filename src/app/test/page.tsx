@@ -15,10 +15,50 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Skeleton } from '@mui/material';
 
+type AddedActivity = {
+  id: string;
+  top: number;
+  height: number;
+};
+
 export default function Test() {
   const [activeId, setActiveId] = useState<string>('');
   const [activities, setActivities] = useState<string[]>(['1']);
-  const [addedActivities, setAddedActivities] = useState<string[]>(['2', '3']);
+  const [addedActivities, setAddedActivities] = useState<AddedActivity[]>([
+    {
+      id: '2',
+      top: 0,
+      height: 24,
+    },
+    {
+      id: '3',
+      top: 0,
+      height: 24,
+    },
+  ]);
+
+  function adjustActivityPositions(activities: AddedActivity[]) {
+    let adjustedActivities = activities.map((activity) => ({ ...activity, overlap: false, overlapCount: 0 }));
+
+    for (let i = 0; i < adjustedActivities.length; i++) {
+      for (let j = i + 1; j < adjustedActivities.length; j++) {
+        if (activitiesOverlap(adjustedActivities[i], adjustedActivities[j])) {
+          adjustedActivities[i].overlap = true;
+          adjustedActivities[j].overlap = true;
+          adjustedActivities[i].overlapCount += 1;
+          adjustedActivities[j].overlapCount += 1;
+        }
+      }
+    }
+    return adjustedActivities;
+  }
+
+  function activitiesOverlap(activity1: AddedActivity, activity2: AddedActivity) {
+    return (
+      (activity1.top < activity2.top + activity2.height && activity1.top + activity1.height > activity2.top) ||
+      (activity2.top < activity1.top + activity1.height && activity2.top + activity2.height > activity1.top)
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -31,9 +71,27 @@ export default function Test() {
         id="dndcontext"
       >
         <div className={styles.leftside}>
-          <ActivityTimeslotsDroppable>
-            {addedActivities.map((id, i) => (
-              <ActivityDropped key={i} id={id} isPlaceholder={activeId === id}></ActivityDropped>
+          <ActivityTimeslotsDroppable
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              alignContent: 'flex-start',
+            }}
+          >
+            {adjustActivityPositions(addedActivities).map((item, i) => (
+              <ActivityDropped
+                key={i}
+                id={item.id}
+                style={{
+                  width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
+                  height: item.height,
+                  marginTop: item.top > item.height ? `${item.top - item.height}px` : 0,
+                  marginLeft: item.overlap ? '0px' : '0', // Adjust as necessary
+                }}
+                isPlaceholder={activeId === item.id}
+              />
             ))}
           </ActivityTimeslotsDroppable>
         </div>
@@ -79,9 +137,14 @@ export default function Test() {
     if (!active) return;
 
     const draggedDOMelement = document.getElementById(`drag-${event.active.id}`);
-
-    if (draggedDOMelement) {
+    const overElement = document.getElementById(over.id as string);
+    let relativeTopPosition = -1;
+    if (draggedDOMelement && overElement) {
       const draggedElementPosition = draggedDOMelement.getBoundingClientRect();
+      const overElementRect = overElement.getBoundingClientRect();
+
+      // Calculate relative top position
+      relativeTopPosition = draggedElementPosition.top - overElementRect.top;
       // Use this position to find out WHERE inside the over element it was placed.
       // Then set the top margin accordingly.
     }
@@ -97,7 +160,15 @@ export default function Test() {
       // Activity dropped over activitytimeslotsdroppable
 
       // Add the activity to the addedActivities list
-      setAddedActivities([...addedActivities, active.id.toString()]);
+      console.log(relativeTopPosition);
+      setAddedActivities([
+        ...addedActivities,
+        {
+          id: active.id.toString(),
+          height: 24,
+          top: relativeTopPosition,
+        },
+      ]);
       // Remove the activity from the activites list
 
       setActivities((items) => {
@@ -121,7 +192,7 @@ export default function Test() {
 
       // remove from added activities
       setAddedActivities((items) => {
-        const foundItem = items.findIndex((v, i) => v === active.id);
+        const foundItem = items.findIndex((v, i) => v.id === active.id);
         if (foundItem >= 0) {
           return items.toSpliced(foundItem, 1);
         }
@@ -135,13 +206,13 @@ export default function Test() {
   }
 }
 
-function ActivityTimeslotsDroppable({ children }: { children: ReactNode }) {
+function ActivityTimeslotsDroppable({ children, style }: { children: ReactNode; style: React.CSSProperties }) {
   const { setNodeRef, node } = useDroppable({
     id: 'activitytimeslotsdroppable',
   });
 
   return (
-    <div className={styles.droppableAreas} ref={setNodeRef} id={'activitytimeslotsdroppable'}>
+    <div style={style} className={styles.droppableAreas} ref={setNodeRef} id={'activitytimeslotsdroppable'}>
       {children}
     </div>
   );
@@ -179,7 +250,15 @@ function Activity({ id, isPlaceholder = false }: { id: string; isPlaceholder?: b
   );
 }
 
-function ActivityDropped({ id, isPlaceholder = false }: { id: string; isPlaceholder?: boolean }) {
+function ActivityDropped({
+  id,
+  isPlaceholder = false,
+  style,
+}: {
+  id: string;
+  isPlaceholder?: boolean;
+  style: React.CSSProperties;
+}) {
   const { setNodeRef, listeners, attributes } = useDraggable({
     id: id,
     data: {
@@ -187,13 +266,14 @@ function ActivityDropped({ id, isPlaceholder = false }: { id: string; isPlacehol
     },
   });
 
-  const style: any = {
+  const internalstyle: any = {
     background: isPlaceholder ? 'lightgray' : 'white',
     boxSizing: isPlaceholder ? 'border-box' : '',
+    ...style,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes}>
       <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>Activity dropped {id}</p>
     </div>
   );
