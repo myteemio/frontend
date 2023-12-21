@@ -38,8 +38,15 @@ export default function Test() {
   ]);
 
   function adjustActivityPositions(activities: AddedActivity[]) {
-    let adjustedActivities = activities.map((activity) => ({ ...activity, overlap: false, overlapCount: 0 }));
+    let adjustedActivities = activities.map((activity) => ({
+      ...activity,
+      overlap: false,
+      overlapCount: 0,
+      isIncorrect: false,
+      leftOffset: 0,
+    }));
 
+    // Calculate overlap and overlapCount for each activity
     for (let i = 0; i < adjustedActivities.length; i++) {
       for (let j = i + 1; j < adjustedActivities.length; j++) {
         if (activitiesOverlap(adjustedActivities[i], adjustedActivities[j])) {
@@ -50,14 +57,47 @@ export default function Test() {
         }
       }
     }
+
+    // Identify activities that overlap more elements than the ones they are overlapped with
+    adjustedActivities.forEach((activity) => {
+      for (let otherActivity of adjustedActivities) {
+        if (activity !== otherActivity && activitiesOverlap(activity, otherActivity)) {
+          if (activity.overlapCount > otherActivity.overlapCount) {
+            activity.isIncorrect = true;
+            break; // Break as soon as one incorrect overlap is found
+          }
+        }
+      }
+    });
+
+    // Calculate the leftOffset for each item
+    adjustedActivities.forEach((activity, index) => {
+      if (activity.overlap) {
+        activity.leftOffset = calculateLeftOffset(adjustedActivities, index, activity.overlapCount);
+      }
+    });
+
     return adjustedActivities;
   }
 
-  function activitiesOverlap(activity1: AddedActivity, activity2: AddedActivity) {
+  function activitiesOverlap(activity1: AddedActivity, activity2: AddedActivity): boolean {
+    // Assuming overlap logic based on vertical positioning
     return (
       (activity1.top < activity2.top + activity2.height && activity1.top + activity1.height > activity2.top) ||
       (activity2.top < activity1.top + activity1.height && activity2.top + activity2.height > activity1.top)
     );
+  }
+
+  function calculateLeftOffset(activities: AddedActivity[], index: number, overlapCount: number): number {
+    let order = 0; // Determine the order of the current activity among overlapping activities
+    for (let i = 0; i < index; i++) {
+      if (activitiesOverlap(activities[i], activities[index])) {
+        order++;
+      }
+    }
+
+    // Calculate left offset as a percentage based on order and overlap count
+    return (100 / (overlapCount + 1) + (order > 1 ? overlapCount * 1 - 1 : 1)) * order;
   }
 
   return (
@@ -78,6 +118,7 @@ export default function Test() {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               alignContent: 'flex-start',
+              position: 'relative',
             }}
           >
             {adjustActivityPositions(addedActivities).map((item, i) => (
@@ -85,10 +126,12 @@ export default function Test() {
                 key={i}
                 id={item.id}
                 style={{
+                  position: 'absolute',
                   width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
                   height: item.height,
-                  marginTop: item.top > item.height ? `${item.top - item.height}px` : 0,
-                  marginLeft: item.overlap ? '0px' : '0', // Adjust as necessary
+                  top: item.top > 0 ? `${item.top}px` : `0px`,
+                  left: `${item.leftOffset}%`,
+                  border: item.isIncorrect ? '1px solid red' : 'none',
                 }}
                 isPlaceholder={activeId === item.id}
               />
@@ -151,7 +194,23 @@ export default function Test() {
 
     // check if its dropped over itself
     if (active.data.current && over.id === active.data.current.location) {
-      console.log('dropped on itself');
+      if (over.id === 'activitytimeslotsdroppable') {
+        // Update position and height
+        setAddedActivities((items) => {
+          const foundIndex = items.findIndex((v, i) => v.id === active.id.toString());
+
+          if (foundIndex >= 0) {
+            const newItems = [...items];
+            newItems[foundIndex] = { ...newItems[foundIndex], top: relativeTopPosition };
+
+            return newItems;
+          }
+          return items;
+        });
+        return;
+      }
+
+      console.log('Dropped on itself inside activity list');
       return;
     }
 
