@@ -12,8 +12,6 @@ import {
   DragStartEvent,
   DragMoveEvent,
 } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
-import { Skeleton } from '@mui/material';
 
 type AddedActivity = {
   id: string;
@@ -197,16 +195,23 @@ export default function Test() {
       if (over.id === 'activitytimeslotsdroppable') {
         // Update position and height
         setAddedActivities((items) => {
-          const foundIndex = items.findIndex((v, i) => v.id === active.id.toString());
+          const newItems = [...items];
+          const foundIndex = newItems.findIndex((v) => v.id === active.id.toString());
 
           if (foundIndex >= 0) {
-            const newItems = [...items];
             newItems[foundIndex] = { ...newItems[foundIndex], top: relativeTopPosition };
-
-            return newItems;
           }
-          return items;
+
+          newItems.sort((a, b) => {
+            if (a.top === b.top) {
+              return newItems.indexOf(a) - newItems.indexOf(b);
+            }
+            return a.top - b.top;
+          });
+
+          return newItems;
         });
+
         return;
       }
 
@@ -219,15 +224,27 @@ export default function Test() {
       // Activity dropped over activitytimeslotsdroppable
 
       // Add the activity to the addedActivities list
-      console.log(relativeTopPosition);
-      setAddedActivities([
-        ...addedActivities,
-        {
-          id: active.id.toString(),
-          height: 24,
-          top: relativeTopPosition,
-        },
-      ]);
+
+      setAddedActivities((items) => {
+        const newItems = [
+          ...items,
+          {
+            id: active.id.toString(),
+            height: 24,
+            top: relativeTopPosition,
+          },
+        ];
+
+        newItems.sort((a, b) => {
+          if (a.top === b.top) {
+            return newItems.indexOf(a) - newItems.indexOf(b);
+          }
+          return a.top - b.top;
+        });
+
+        return newItems;
+      });
+
       // Remove the activity from the activites list
 
       setActivities((items) => {
