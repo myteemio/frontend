@@ -232,7 +232,6 @@ export default function Test() {
     if (over && over.id) {
       if (over.id === 'activitytimeslotsdroppable') {
         // Dragged over activity droppable
-        console.log(event);
       }
     }
     return; // Not dragged over anything
@@ -241,11 +240,11 @@ export default function Test() {
     const { over, active } = event;
 
     if (over && over.id) {
-      console.log(event);
       // get the droppable its hovering above
       const item = document.getElementById(`drag-${active.id}`);
+      const overElement = document.getElementById(over.id.toString());
 
-      if (item) {
+      if (item && overElement) {
         if (over.id === 'activitytimeslotsdroppable') {
           // Set the size of drag element correctly
           // must fix the background-color and shits here...
@@ -256,6 +255,12 @@ export default function Test() {
               onehourheight
             }%; background-color: white;`
           );
+
+          // Snap to grid
+          const bbactive = item.getBoundingClientRect();
+          const bbover = overElement.getBoundingClientRect();
+
+          // Set transform to bbover
 
           return;
         }
