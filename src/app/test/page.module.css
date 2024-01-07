@@ -14,6 +14,7 @@
   height: 100%;
   box-sizing: border-box;
   background-color: yellowgreen;
+  position: relative;
 }
 
 .rightside {
@@ -25,6 +26,40 @@
 }
 
 .droppableAreas {
+  margin-left: 50px;
+  width: calc(100% - 50px);
+  height: 100%;
+  z-index: 100;
+}
+
+.timetableStyle {
+  position: absolute;
   width: 100%;
   height: 100%;
+  top: 0px;
+  left: 0px;
+  padding: 0px;
+  padding: 20px;
+  z-index: 1;
+}
+
+.singletimetablestyle {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.horizontalline {
+  display: block;
+  height: 1px;
+  box-sizing: border-box;
+  background-color: black;
+  width: 100%;
+  margin-left: 5px;
+}
+.singletimetabletext {
+  padding: 0px;
+  margin: 0px;
+  width: 50px;
+  text-align: center;
+  margin-top: -12px;
 }

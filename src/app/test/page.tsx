@@ -27,6 +27,7 @@ type AdjustedActivitiesT = AddedActivityT & {
 };
 
 export default function Test() {
+  const [timetable, setTimetable] = useState<{ hours: number; startTime: number }>({ hours: 18, startTime: 6 });
   const [activeElement, setActiveElement] = useState<AddedActivityT>();
   const [activities, setActivities] = useState<string[]>(['1']);
   const [adjustedActivities, setAdjustedActivities] = useState<AdjustedActivitiesT[]>([]);
@@ -34,12 +35,12 @@ export default function Test() {
     {
       id: '2',
       top: 0,
-      height: 10,
+      height: 5.55556,
     },
     {
       id: '3',
       top: 0,
-      height: 10,
+      height: 5.55556,
     },
   ]);
 
@@ -140,6 +141,8 @@ export default function Test() {
       >
         <div className={styles.leftside}>
           <ActivityTimeslotsDroppable
+            hours={timetable.hours}
+            startTime={timetable.startTime}
             style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -153,6 +156,13 @@ export default function Test() {
               <ActivityDropped
                 key={i}
                 id={item.id}
+                duration={convertProcentageHeightToHours(item.height, timetable.hours)}
+                timeslot={convertPositionAndHeightToTimeslots(
+                  item.height,
+                  item.top > 0 ? item.top : 0,
+                  timetable.hours,
+                  timetable.startTime
+                )}
                 style={{
                   position: 'absolute',
                   width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
@@ -173,7 +183,8 @@ export default function Test() {
             ))}
           </ActivityDroppable>
         </div>
-        <DragOverlay style={{ height: '100%' }}>
+        <DragOverlay style={{ height: '85%' }}>
+          {/* This magic 85% is just so the overlay will match the height of the element dragged*/}
           {activeElement ? (
             <Activity
               style={{ height: activeElement.height > 0 ? `${activeElement.height}%` : 'auto' }}
@@ -297,7 +308,7 @@ export default function Test() {
           ...items,
           {
             id: active.id.toString(),
-            height: 10,
+            height: 5.55556,
             top: relativeTopPosition,
           },
         ];
@@ -349,15 +360,48 @@ export default function Test() {
   }
 }
 
-function ActivityTimeslotsDroppable({ children, style }: { children: ReactNode; style: React.CSSProperties }) {
+function ActivityTimeslotsDroppable({
+  children,
+  style,
+  hours,
+  startTime,
+}: {
+  children: ReactNode;
+  style: React.CSSProperties;
+  hours: number;
+  startTime: number;
+}) {
   const { setNodeRef, node } = useDroppable({
     id: 'activitytimeslotsdroppable',
   });
 
+  const [timetable, setTimetable] = useState<string[]>([]);
+
+  useEffect(() => {
+    const timeslots = [];
+    for (let i = 0; i < hours; i++) {
+      const hour = startTime + i;
+      timeslots.push(hour < 10 ? `0${hour}:00` : `${hour}:00`);
+    }
+    setTimetable(timeslots);
+  }, []);
+
   return (
-    <div style={style} className={styles.droppableAreas} ref={setNodeRef} id={'activitytimeslotsdroppable'}>
-      {children}
-    </div>
+    <>
+      <div style={style} className={styles.droppableAreas} ref={setNodeRef} id={'activitytimeslotsdroppable'}>
+        {children}
+      </div>
+      <div className={styles.timetableStyle}>
+        {timetable.map((v, i) => {
+          return (
+            <div className={styles.singletimetablestyle} style={{ height: `${100 / timetable.length}%` }} key={i}>
+              <p className={styles.singletimetabletext}>{v}</p>
+              <span className={styles.horizontalline} />
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
@@ -406,10 +450,14 @@ function ActivityDropped({
   id,
   isPlaceholder = false,
   style,
+  duration,
+  timeslot,
 }: {
   id: string;
   isPlaceholder?: boolean;
   style: React.CSSProperties;
+  duration: number;
+  timeslot: { start: string; end: string };
 }) {
   const { setNodeRef, listeners, attributes } = useDraggable({
     id: id,
@@ -426,7 +474,39 @@ function ActivityDropped({
 
   return (
     <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes}>
-      <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>Activity dropped {id}</p>
+      <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>
+        Activity dropped {id} - ({duration} hours) - ({timeslot.start} - {timeslot.end})
+      </p>
     </div>
   );
+}
+
+function convertProcentageHeightToHours(heightProcentage: number, totalhours: number) {
+  return Math.round(heightProcentage * (totalhours / 100));
+}
+function convertPositionAndHeightToTimeslots(
+  heightPercentage: number,
+  topPercentage: number,
+  totalHours: number,
+  startTime: number
+) {
+  // Convert percentages to hours
+  const startHoursFromStartTime = (topPercentage / 100) * totalHours;
+  const durationHours = (heightPercentage / 100) * totalHours;
+
+  // Calculate start and end times in hours from midnight
+  const startTotalHours = startTime + startHoursFromStartTime;
+  const endTotalHours = startTotalHours + durationHours;
+
+  // Convert to HH:MM format
+  const formatTime = (hours: number) => {
+    const roundedHours = Math.floor(hours);
+    const minutes = Math.floor((hours - roundedHours) * 60);
+    return `${roundedHours < 10 ? '0' : ''}${roundedHours}:${minutes < 10 ? '0' : ''}${minutes}`;
+  };
+
+  const start = formatTime(startTotalHours);
+  const end = formatTime(endTotalHours);
+
+  return { start, end };
 }
