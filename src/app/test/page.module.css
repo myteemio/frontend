@@ -6,6 +6,7 @@
   align-items: center;
   flex-wrap: wrap;
   box-sizing: border-box;
+  position: relative;
 }
 
 .leftside {
@@ -23,6 +24,7 @@
   width: 50%;
   height: 100%;
   background-color: green;
+  position: relative;
 }
 
 .droppableAreas {
