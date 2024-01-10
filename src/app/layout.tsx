@@ -6,6 +6,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { teemioTheme } from '@/styling/theme';
+import 'dotenv/config'
 import Navbar from '@/components/navbar.component';
 
 export const metadata: Metadata = {

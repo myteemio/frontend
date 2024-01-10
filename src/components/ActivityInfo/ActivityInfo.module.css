@@ -1,0 +1,23 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  margin-right: 96px;
+  border-radius: 32x;
+}
+
+.header {
+  font-size: 32px;
+}
+
+.paper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  margin-right: 96px;
+  border-radius: 32x;
+}

@@ -1,8 +1,6 @@
 import Image from 'next/image';
-import styles from './page.module.css';
 import { Metadata } from 'next';
-import { Box, Button, Card, CardContent, Chip, Container, Grid, Typography } from '@mui/material';
-import Navbar from '@/components/navbar.component';
+import { Box, Button, Card, CardContent, Chip, Grid, Typography } from '@mui/material';
 import Link from 'next/link';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 

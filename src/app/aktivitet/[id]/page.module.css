@@ -1,0 +1,117 @@
+.image {
+  margin-top: 24px;
+  height: 25%;
+  width: 35%;
+  border-radius: 16px;
+}
+
+.title {
+  margin-top: 24px;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: 24px;
+  width: 60%;
+  align-self: center;
+}
+
+.icon {
+  font-size: 96px;
+  align-self: center;
+}
+
+.address {
+  font-size: 32px;
+  align-self: center;
+}
+
+.mapContainer {
+  display: flex;
+  height: 400px;
+  width: 80%;
+  margin-top: 48px;
+}
+
+@media screen and (max-width: 1200px) {
+  .mapContainer {
+    height: 300px;
+  }
+
+  .address {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .mapContainer {
+    height: 200px;
+  }
+
+  .icon {
+    font-size: 48px;
+    align-self: center;
+  }
+
+  .address {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .mapContainer {
+    height: 200px;
+  }
+
+  .icon {
+    font-size: 48px;
+    align-self: center;
+  }
+
+  .description {
+    margin-top: 24px;
+    font-size: 16px;
+    width: 80%;
+  }
+
+  .address {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .image {
+    height: 50%;
+    width: 50%;
+  }
+
+  .title {
+    margin-top: 24px;
+    font-size: 48px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .mapContainer {
+    height: 200px;
+  }
+
+  .icon {
+    font-size: 48px;
+    align-self: center;
+  }
+
+  .address {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .icon {
+    font-size: 24px;
+    align-self: center;
+  }
+  .address {
+    font-size: 8px;
+  }
+}
