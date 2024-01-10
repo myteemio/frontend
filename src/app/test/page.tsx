@@ -11,7 +11,13 @@ import {
   DragOverlay,
   DragStartEvent,
   DragMoveEvent,
+  Modifier,
+  ClientRect,
+  CollisionDetection,
+  closestCenter,
 } from '@dnd-kit/core';
+import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
+import { Transform } from '@dnd-kit/utilities';
 
 type AddedActivityT = {
   id: string;
@@ -154,6 +160,21 @@ export default function Test() {
     setAdjustedActivities(adjustActivityPositions(addedActivities));
   }, [addedActivities]);
 
+  function customSnapToGrid(args: any) {
+    const { transform } = args;
+
+    var heightOfAreaInNumbers = Number(heightOfDroppableArea.replace(/\D/g, ''));
+
+    // Snap to every 20 minutes
+    var gridsizeInpIxels = (heightOfAreaInNumbers * (onehourheight / 100)) / 3;
+
+    return {
+      ...transform,
+      x: Math.floor(transform.x / gridsizeInpIxels) * gridsizeInpIxels,
+      y: Math.floor(transform.y / gridsizeInpIxels) * gridsizeInpIxels,
+    };
+  }
+
   return (
     <div className={styles.container}>
       <DndContext
@@ -210,6 +231,7 @@ export default function Test() {
           </ActivityDroppable>
         </div>
         <DragOverlay
+          modifiers={[customRestrictToParent, customSnapToGrid]}
           style={{
             height: heightOfDroppableArea,
           }}
@@ -230,8 +252,14 @@ export default function Test() {
   function handleDragMove(event: DragMoveEvent) {
     const { over, active } = event;
     if (over && over.id) {
-      if (over.id === 'activitytimeslotsdroppable') {
-        // Dragged over activity droppable
+      const item = document.getElementById(`drag-${active.id}`);
+      const overElement = document.getElementById(over.id.toString());
+
+      if (item && overElement) {
+        if (over.id === 'activitytimeslotsdroppable') {
+          // Dragged over activity droppable
+          // Time to snap it to the grid
+        }
       }
     }
     return; // Not dragged over anything
@@ -248,19 +276,26 @@ export default function Test() {
         if (over.id === 'activitytimeslotsdroppable') {
           // Set the size of drag element correctly
           // must fix the background-color and shits here...
-          item.setAttribute(
-            'style',
-            `height: ${
-              (active.data.current?.activitydetails.defaultDurationHours ?? activeElement?.defaultDurationHours ?? 1) *
-              onehourheight
-            }%; background-color: white;`
-          );
-
-          // Snap to grid
-          const bbactive = item.getBoundingClientRect();
-          const bbover = overElement.getBoundingClientRect();
 
           // Set transform to bbover
+          {
+            if (active.data.current && active.data.current.location !== over.id) {
+              // Snap to the grid when first enter
+              const bbactive = item.getBoundingClientRect();
+              const bbover = overElement.getBoundingClientRect();
+
+              item.setAttribute(
+                'style',
+                `height: ${
+                  (active.data.current?.activitydetails.defaultDurationHours ??
+                    activeElement?.defaultDurationHours ??
+                    1) * onehourheight
+                }%; background-color: white;
+              transform: translate3d(${bbover.x - bbactive.x}px, 0px, 0px) scaleX(1) scaleY(1);
+              `
+              );
+            }
+          }
 
           return;
         }
@@ -275,6 +310,12 @@ export default function Test() {
   }
 
   function handleDragStart(event: DragStartEvent) {
+    // Set the cursor to invisible when dragging
+    const body = document.getElementsByClassName('bodycontent');
+    if (body && body.length === 1) {
+      body[0].setAttribute('style', 'cursor: none;');
+    }
+
     if (event.active.data.current) {
       const loc = event.active.data.current.location;
       if (loc === 'activitytimeslotsdroppable') {
@@ -291,7 +332,6 @@ export default function Test() {
         const foundItem = activities.find((v) => v.id === event.active.id);
 
         if (foundItem) {
-          console.log(foundItem);
           setActiveElement(foundItem);
           return;
         }
@@ -302,7 +342,11 @@ export default function Test() {
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    //console.log(event);
+    // Set the cursor to invisible when dragging
+    const body = document.getElementsByClassName('bodycontent');
+    if (body && body.length === 1) {
+      body[0].setAttribute('style', 'cursor: default;');
+    }
 
     // Default stuff
     setActiveElement(undefined);
@@ -621,4 +665,36 @@ function convertPositionAndHeightToTimeslots(
   const end = formatTime(endTotalHours);
 
   return { start, end };
+}
+
+export const customRestrictToParent: Modifier = ({ containerNodeRect, draggingNodeRect, transform, over, active }) => {
+  if (!draggingNodeRect || !containerNodeRect) {
+    return transform;
+  }
+
+  if (!over) {
+    return transform;
+  }
+
+  return restrictToBoundingRect(transform, draggingNodeRect as ClientRect, containerNodeRect);
+};
+
+function restrictToBoundingRect(transform: Transform, rect: ClientRect, boundingRect: ClientRect): Transform {
+  const value = {
+    ...transform,
+  };
+
+  if (rect.top + transform.y <= boundingRect.top) {
+    value.y = boundingRect.top - rect.top;
+  } else if (rect.bottom + transform.y >= boundingRect.top + boundingRect.height) {
+    value.y = boundingRect.top + boundingRect.height - rect.bottom;
+  }
+
+  if (rect.left + transform.x <= boundingRect.left) {
+    value.x = boundingRect.left - rect.left;
+  } else if (rect.right + transform.x >= boundingRect.left + boundingRect.width) {
+    value.x = boundingRect.left + boundingRect.width - rect.right;
+  }
+
+  return value;
 }
