@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import styles from './page.module.css';
 import Image from 'next/image';
 import ActivityInfo from '@/components/ActivityInfo/ActivityInfo';
@@ -13,9 +13,6 @@ export default function Aktivitet() {
     //TODO: Setup this API KEY properly
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
   });
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
   const center = {
     lat: 55.67932493025922,
