@@ -40,7 +40,14 @@ export default function Aktivitet({ params }: Props) {
         {!isLoading ? activity?.name : <Skeleton animation="wave" />}
       </Typography>
       <Typography className={styles.description} variant="h5">
-        {!isLoading ? activity?.description : <Skeleton animation="wave" />}
+        {!isLoading ? (
+          activity?.description
+        ) : (
+          <>
+            <Skeleton animation="wave" />
+            <Skeleton width={'90%'} animation="wave" />
+          </>
+        )}
       </Typography>
       {!isLoading ? (
         <ActivityInfo
