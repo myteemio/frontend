@@ -4,27 +4,11 @@ import { Box, Card, Typography } from '@mui/material';
 import styles from './page.module.css';
 import Image from 'next/image';
 import ActivityInfo from '@/components/ActivityInfo/ActivityInfo';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { ActivityLocation } from '@/components/ActivityLocation.component';
 
 export default function Aktivitet() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    //TODO: Setup this API KEY properly
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
-  });
-
-  const center = {
-    lat: 55.67932493025922,
-    lng: 12.589861474856367,
-  };
-
-  const mapStyles = {
-    width: '50%',
-    height: '100%',
-  };
-
-  return isLoaded ? (
+  return (
     <Box
       display={'flex'}
       flexDirection={'column'}
@@ -73,14 +57,8 @@ export default function Aktivitet() {
             </Typography>
           </Box>
         </Box>
-        <GoogleMap mapContainerStyle={mapStyles} center={center} zoom={15}>
-          <Marker
-            position={{ lat: 55.67932493025922, lng: 12.589861474856367 }}
-          />
-        </GoogleMap>
+        <ActivityLocation></ActivityLocation>
       </Card>
     </Box>
-  ) : (
-    <></>
   );
 }
