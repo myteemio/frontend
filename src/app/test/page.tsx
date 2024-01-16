@@ -169,7 +169,7 @@ export default function Test() {
         <div className={styles.rightside}>
           <ActivityDroppable>
             {activities.map((id, i) => (
-              <Activity style={{}} key={i} id={id} isPlaceholder={activeElement?.id === id}></Activity>
+              <Activity style={{}} key={i} id={id} isPlaceholder={activeElement?.id === id}/>
             ))}
           </ActivityDroppable>
         </div>

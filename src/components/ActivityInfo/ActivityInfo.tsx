@@ -1,12 +1,8 @@
-import {
-  Box,
-  Paper,
-  ThemeProvider,
-  Typography,
-  styled,
-} from '@mui/material';
+import { ThemeProvider, Typography } from '@mui/material';
 import styles from './ActivityInfo.module.css';
 import { teemioTheme } from '@/styling/theme';
+import { StyledBox } from '../StyledComponents/ActivityStyledBox';
+import { StyledPaper } from '../StyledComponents/ActivityStyledPaper';
 
 export default function ActivityInfo({
   priceFrom,
@@ -17,33 +13,6 @@ export default function ActivityInfo({
   minPeople: number;
   category: string;
 }) {
-  const StyledPaper = styled(Paper)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 200,
-    width: 450,
-    borderRadius: 32,
-    [theme.breakpoints.down(500)]: {
-      height: 150,
-      width: 300,
-    },
-  }));
-
-  const StyledBox = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    width: '80%',
-    justifyContent: 'center',
-    marginTop: '64px',
-    gap: '96px',
-    marginBottom: '64px',
-    [theme.breakpoints.down('lg')]: {
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
-  }));
-
   return (
     <ThemeProvider theme={teemioTheme}>
       <StyledBox>

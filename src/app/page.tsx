@@ -1,6 +1,14 @@
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { Box, Button, Card, CardContent, Chip, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  Typography,
+} from '@mui/material';
 import Link from 'next/link';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 
@@ -12,7 +20,13 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <Box minWidth="100%" minHeight={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+      <Box
+        minWidth="100%"
+        minHeight={'100%'}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
         <Grid
           container
           flexWrap={'wrap'}
@@ -36,8 +50,10 @@ export default function Home() {
               PLANLÆG DIT NÆSTE TEAMEVENT
             </Typography>
             <Typography variant="body1" marginTop={2}>
-              Med Teemio kan du helt gratis planlægge dit næste teamevent! Vi samler det hele ét sted og sørger for at
-              du som virksomhed får minimum 5% rabat på all vores aktiviter - så du kan spare tid og penge!
+              Med Teemio kan du helt gratis planlægge dit næste teamevent! Vi
+              samler det hele ét sted og sørger for at du som virksomhed får
+              minimum 5% rabat på all vores aktiviter - så du kan spare tid og
+              penge!
             </Typography>
             <Box marginTop={4} display={'flex'} gap={2}>
               <Link href={'/planlaeg'}>
@@ -66,7 +82,7 @@ export default function Home() {
                 fill
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
                 alt="Planlæg dit næste teamevent med Teemio"
-              ></Image>
+              />
             </Box>
           </Grid>
         </Grid>
@@ -81,25 +97,40 @@ export default function Home() {
         paddingBottom={4}
         gap={2}
       >
-        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
+        <Card
+          variant="elevation"
+          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
+        >
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
+            <Typography variant="body1">
+              Vælg aktiviter, planlæg din dag og opret event!
+            </Typography>
           </CardContent>
         </Card>
-        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
+        <Card
+          variant="elevation"
+          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
+        >
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
+            <Typography variant="body1">
+              Vælg aktiviter, planlæg din dag og opret event!
+            </Typography>
           </CardContent>
         </Card>
-        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
+        <Card
+          variant="elevation"
+          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
+        >
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
+            <Typography variant="body1">
+              Vælg aktiviter, planlæg din dag og opret event!
+            </Typography>
           </CardContent>
         </Card>
       </Box>
