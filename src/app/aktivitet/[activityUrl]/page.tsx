@@ -33,7 +33,7 @@ export default function Aktivitet({ params }: Props) {
           height={500}
         />
       ) : (
-        <StyledSkeleton animation="wave" variant="rounded" />
+        <StyledSkeleton animation="pulse" variant="rounded" />
       )}
 
       <Typography className={styles.title} variant="h2">
@@ -49,7 +49,7 @@ export default function Aktivitet({ params }: Props) {
           category={activity?.category[0]} // TODO: Change this
         />
       ) : (
-        <Skeleton animation="wave" width={'80%'}>
+        <Skeleton animation="pulse" width={'50%'}>
           <ActivityInfo
             priceFrom={activity?.price}
             minPeople={activity?.persons}
