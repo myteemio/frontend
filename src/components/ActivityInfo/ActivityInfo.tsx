@@ -1,8 +1,8 @@
 import { ThemeProvider, Typography } from '@mui/material';
 import styles from './ActivityInfo.module.css';
 import { teemioTheme } from '@/styling/theme';
-import { StyledBox } from '../StyledComponents/ActivityStyledBox';
-import { StyledPaper } from '../StyledComponents/ActivityStyledPaper';
+import { StyledBox } from '../StyledComponents/ActivityBox';
+import { StyledPaper } from '../StyledComponents/ActivityPaper';
 
 export default function ActivityInfo({
   priceFrom,

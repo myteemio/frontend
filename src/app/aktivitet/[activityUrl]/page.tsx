@@ -7,7 +7,7 @@ import ActivityInfo from '@/components/ActivityInfo/ActivityInfo';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { ActivityLocation } from '@/components/ActivityLocation.component';
 import { useActivity } from '@/lib/useActivity';
-import { StyledSkeleton } from '@/components/StyledComponents/StyledSkeleton';
+import { StyledSkeleton } from '@/components/StyledComponents/Skeleton';
 
 type Props = {
   params: { activityUrl: string };
