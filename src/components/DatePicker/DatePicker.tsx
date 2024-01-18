@@ -103,6 +103,15 @@ export function DatePicker() {
     }
   }
 
+  function removeDate(date: HighlightedDay) {
+    const newHighlightedDays = [...highlightedDays];
+    const index = newHighlightedDays.findIndex(
+      (existingDate) => existingDate.formattedDate === date.formattedDate
+    );
+    newHighlightedDays.splice(index, 1);
+    setHighlitedDays(newHighlightedDays);
+  }
+
   return (
     <ThemeProvider theme={teemioTheme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -169,7 +178,11 @@ export function DatePicker() {
                     md={3}
                     xl={2.5}
                   >
-                    <StyledIconButton color="primary" aria-label="delete">
+                    <StyledIconButton
+                      onClick={() => removeDate(date)}
+                      color="primary"
+                      aria-label="delete"
+                    >
                       <StyledClearIcon />
                     </StyledIconButton>
                     <Typography
