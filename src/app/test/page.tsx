@@ -283,17 +283,6 @@ export default function Test() {
               // Snap to the grid when first enter
               const bbactive = item.getBoundingClientRect();
               const bbover = overElement.getBoundingClientRect();
-
-              item.setAttribute(
-                'style',
-                `height: ${
-                  (active.data.current?.activitydetails.defaultDurationHours ??
-                    activeElement?.defaultDurationHours ??
-                    1) * onehourheight
-                }%; background-color: white;
-              transform: translate3d(${bbover.x - bbactive.x}px, 0px, 0px) scaleX(1) scaleY(1);
-              `
-              );
             }
           }
 
@@ -667,13 +656,36 @@ function convertPositionAndHeightToTimeslots(
   return { start, end };
 }
 
-export const customRestrictToParent: Modifier = ({ containerNodeRect, draggingNodeRect, transform, over, active }) => {
+export const customRestrictToParent: Modifier = ({
+  containerNodeRect,
+  draggingNodeRect,
+  transform,
+  over,
+  active,
+  overlayNodeRect,
+}) => {
   if (!draggingNodeRect || !containerNodeRect) {
     return transform;
   }
 
   if (!over) {
     return transform;
+  }
+
+  if (!active) {
+    return transform;
+  }
+
+  // When its not dragged over the activity slot droppable, then dont snap or anything
+  if (over.id !== 'activitytimeslotsdroppable') {
+    return transform;
+  }
+
+  const theActivitySlotDroppable = document.getElementById('activitytimeslotsdroppable');
+
+  if (theActivitySlotDroppable) {
+    const rectOfActivity = theActivitySlotDroppable.getBoundingClientRect();
+    return restrictToBoundingRect(transform, draggingNodeRect as ClientRect, rectOfActivity);
   }
 
   return restrictToBoundingRect(transform, draggingNodeRect as ClientRect, containerNodeRect);
