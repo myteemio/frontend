@@ -81,7 +81,10 @@ export default function Aktivitet({ params }: Props) {
               </Typography>
             </Box>
           </Box>
-          <ActivityLocation />
+          <ActivityLocation
+            lat={activity?.location.lat}
+            lng={activity?.location.long}
+          />
         </Card>
       ) : (
         <Skeleton animation="wave" width={'80%'} height={400} />

@@ -1,6 +1,6 @@
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
-export function ActivityLocation() {
+export function ActivityLocation(props: { lat: number; lng: number }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     //TODO: Setup this API KEY properly
@@ -8,8 +8,8 @@ export function ActivityLocation() {
   });
 
   const center = {
-    lat: 55.67932493025922,
-    lng: 12.589861474856367,
+    lat: props.lat,
+    lng: props.lng,
   };
 
   const mapStyles = {
@@ -19,7 +19,7 @@ export function ActivityLocation() {
 
   return isLoaded ? (
     <GoogleMap mapContainerStyle={mapStyles} center={center} zoom={15}>
-      <Marker position={{ lat: 55.67932493025922, lng: 12.589861474856367 }} />
+      <Marker position={{ lat: props.lat, lng: props.lng }} />
     </GoogleMap>
   ) : (
     <></>
