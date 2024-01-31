@@ -217,6 +217,49 @@ export default function Test() {
                   border: item.isIncorrect ? '1px solid red' : 'none',
                 }}
                 isPlaceholder={activeElement?.id === item.id}
+                onResize={(deltaHeight, handlePulled) => {
+                  const heightOfAreaInPixels = Number(heightOfDroppableArea.replace(/\D/g, ''));
+                  let newHeightInPercentage = (deltaHeight / heightOfAreaInPixels) * 100;
+
+                  const snapInterval = onehourheight / (60 / gridSnapInMinutes);
+                  newHeightInPercentage = Math.round(newHeightInPercentage / snapInterval) * snapInterval;
+
+                  // Ensure new height is not below the minimum height
+                  const minHeightPercentage = onehourheight;
+                  const newHeight = Math.max(item.height + newHeightInPercentage, minHeightPercentage);
+
+                  // Prevent resizing below the minimum height and moving the top down in such cases
+                  if (newHeight < minHeightPercentage) {
+                    return;
+                  }
+
+                  if (handlePulled === 'upper') {
+                    const newTopInPercentage = item.top - newHeightInPercentage;
+
+                    // Ensure the top is not less than 0
+                    const newTop = Math.max(newTopInPercentage, 0);
+
+                    console.log(newHeight);
+                    if (newTop > item.top && newHeight <= onehourheight) {
+                      return;
+                    }
+
+                    setAddedActivities((prevActivities) =>
+                      prevActivities.map((activity) =>
+                        activity.id === item.id ? { ...activity, height: newHeight, top: newTop } : activity
+                      )
+                    );
+                  }
+
+                  if (handlePulled === 'lower') {
+                    // Existing logic for resizing from the bottom, now with height snapping
+                    setAddedActivities((prevActivities) =>
+                      prevActivities.map((activity) =>
+                        activity.id === item.id ? { ...activity, height: newHeight } : activity
+                      )
+                    );
+                  }
+                }}
               />
             ))}
           </ActivityTimeslotsDroppable>
@@ -307,7 +350,7 @@ export default function Test() {
       const loc = event.active.data.current.location;
       if (loc === 'activitytimeslotsdroppable') {
         // Item dropped already. Look at the addedactivities
-        const foundItem = addedActivities.find((v) => v.id === event.active.id);
+        const foundItem = adjustedActivities.find((v) => v.id === event.active.id);
         if (foundItem) {
           setActiveElement(foundItem);
           return;
@@ -362,6 +405,7 @@ export default function Test() {
     // check if its dropped over itself
     if (active.data.current && over.id === active.data.current.location) {
       if (over.id === 'activitytimeslotsdroppable') {
+        console.log('dropped here');
         // Update position and height
         setAddedActivities((items) => {
           const newItems = [...items];
@@ -593,6 +637,7 @@ function ActivityDropped({
   duration,
   timeslot,
   details,
+  onResize, // Added this prop to handle the resize
 }: {
   id: string;
   isPlaceholder?: boolean;
@@ -600,6 +645,7 @@ function ActivityDropped({
   duration: number;
   timeslot: { start: string; end: string };
   details: AddedActivityT;
+  onResize: (deltaHeight: number, handledPulled: 'upper' | 'lower') => void; // Added this type for the onResize prop
 }) {
   const { setNodeRef, listeners, attributes } = useDraggable({
     id: id,
@@ -615,11 +661,73 @@ function ActivityDropped({
     ...style,
   };
 
+  const [height, setHeight] = useState<number>(style.height as number);
+
+  // Define a minimum height percentage
+  const minHeightPercentage = 5.55;
+
+  // Resize handler for the top and bottom buttons
+  const handleResize = (deltaHeight: number, handlePulled: 'upper' | 'lower') => {
+    onResize(deltaHeight, handlePulled);
+  };
+
   return (
-    <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes}>
-      <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>
-        Activity dropped {id} - ({duration} hours) - ({timeslot.start} - {timeslot.end})
-      </p>
+    <div style={internalstyle}>
+      {/* Resize button at the top */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-10px',
+          height: '10px',
+          width: '20px',
+          backgroundColor: 'blue',
+          cursor: 'ns-resize',
+        }}
+        onMouseDown={(e) => {
+          const startY = e.clientY;
+          // Attach mouse move and mouse up listeners to the document
+          const onMouseMove = (e: MouseEvent) => {
+            handleResize(startY - e.clientY, 'upper');
+          };
+          const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+          };
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        }}
+      />
+
+      {/* Your existing content */}
+      <div ref={setNodeRef} {...listeners} {...attributes} style={{ height: '100%', width: '100%' }}>
+        <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>
+          Activity dropped {id} - ({duration} hours) - ({timeslot.start} - {timeslot.end})
+        </p>
+      </div>
+
+      {/* Resize button at the bottom */}
+      <div
+        style={{
+          position: 'absolute',
+          height: '10px',
+          width: '20px',
+          backgroundColor: 'blue',
+          cursor: 'ns-resize',
+        }}
+        onMouseDown={(e) => {
+          const startY = e.clientY;
+          // Attach mouse move and mouse up listeners to the document
+          const onMouseMove = (e: MouseEvent) => {
+            handleResize(e.clientY - startY, 'lower');
+          };
+          const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+          };
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        }}
+      />
     </div>
   );
 }
