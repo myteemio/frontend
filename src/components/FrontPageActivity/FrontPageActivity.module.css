@@ -1,0 +1,23 @@
+.image {
+  height: 100%;
+  width: 100%;
+  border-radius: 16px;
+}
+
+.imageContainer {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.checkBox {
+  position: absolute;
+  transform: scale(1.2);
+  top: 5px;
+  right: 5px;
+}
+
+.flexContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

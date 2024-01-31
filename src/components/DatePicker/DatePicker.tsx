@@ -5,7 +5,6 @@ import {
   DateCalendar,
   DatePickerSlotsComponentsProps,
   LocalizationProvider,
-  PickersDayProps,
 } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
@@ -23,15 +22,6 @@ export interface HighlightedDay {
   day: string;
   dayNum: number;
   month: string;
-}
-
-export interface DayCalendarSlotsComponent<TDate> {
-  /**
-   * Custom component for day.
-   * Check the [PickersDay](https://mui.com/x/api/date-pickers/pickers-day/) component.
-   * @default PickersDay
-   */
-  Day?: React.ElementType<PickersDayProps<TDate>>;
 }
 
 //Higlight the dates in highlightedDays array
