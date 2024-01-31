@@ -13,10 +13,7 @@ import {
   DragMoveEvent,
   Modifier,
   ClientRect,
-  CollisionDetection,
-  closestCenter,
 } from '@dnd-kit/core';
-import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
 import { Transform } from '@dnd-kit/utilities';
 
 type AddedActivityT = {
@@ -33,10 +30,11 @@ type AdjustedActivitiesT = AddedActivityT & {
   leftOffset: number;
 };
 
-export default function Test() {
-  const timetableHours = 18;
-  const onehourheight = 100 / 18;
+const timetableHours = 18;
+const onehourheight = 100 / 18;
+const gridSnapInMinutes = 20;
 
+export default function Test() {
   const [timetable, setTimetable] = useState<{ hours: number; startTime: number }>({
     hours: timetableHours,
     startTime: 6,
@@ -166,7 +164,7 @@ export default function Test() {
     var heightOfAreaInNumbers = Number(heightOfDroppableArea.replace(/\D/g, ''));
 
     // Snap to every 20 minutes
-    var gridsizeInpIxels = (heightOfAreaInNumbers * (onehourheight / 100)) / 3;
+    var gridsizeInpIxels = (heightOfAreaInNumbers * (onehourheight / 100)) / (60 / gridSnapInMinutes);
 
     return {
       ...transform,
@@ -226,7 +224,7 @@ export default function Test() {
         <div className={styles.rightside}>
           <ActivityDroppable>
             {activities.map((v, i) => (
-              <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id}/>
+              <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id} />
             ))}
           </ActivityDroppable>
         </div>
@@ -629,6 +627,7 @@ function ActivityDropped({
 function convertProcentageHeightToHours(heightProcentage: number, totalhours: number) {
   return Math.round(heightProcentage * (totalhours / 100));
 }
+
 function convertPositionAndHeightToTimeslots(
   heightPercentage: number,
   topPercentage: number,
@@ -643,15 +642,27 @@ function convertPositionAndHeightToTimeslots(
   const startTotalHours = startTime + startHoursFromStartTime;
   const endTotalHours = startTotalHours + durationHours;
 
-  // Convert to HH:MM format
-  const formatTime = (hours: number) => {
-    const roundedHours = Math.floor(hours);
-    const minutes = Math.floor((hours - roundedHours) * 60);
-    return `${roundedHours < 10 ? '0' : ''}${roundedHours}:${minutes < 10 ? '0' : ''}${minutes}`;
+  // Convert hours to total minutes
+  const startTotalMinutes = startTotalHours * 60;
+  const endTotalMinutes = endTotalHours * 60;
+
+  // Round to nearest 20-minute interval
+  const roundToNearestInterval = (minutes: number) => {
+    return Math.round(minutes / gridSnapInMinutes) * gridSnapInMinutes;
   };
 
-  const start = formatTime(startTotalHours);
-  const end = formatTime(endTotalHours);
+  const roundedStartMinutes = roundToNearestInterval(startTotalMinutes);
+  const roundedEndMinutes = roundToNearestInterval(endTotalMinutes);
+
+  // Convert to HH:MM format
+  const formatTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours < 10 ? '0' : ''}${hours}:${remainingMinutes < 10 ? '0' : ''}${remainingMinutes}`;
+  };
+
+  const start = formatTime(roundedStartMinutes);
+  const end = formatTime(roundedEndMinutes);
 
   return { start, end };
 }
