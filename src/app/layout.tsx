@@ -6,7 +6,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { teemioTheme } from '@/styling/theme';
-import 'dotenv/config'
 import Navbar from '@/components/navbar.component';
 
 export const metadata: Metadata = {
@@ -14,14 +13,21 @@ export const metadata: Metadata = {
   description: 'Den varmeste teemio',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <CssBaseline />
       <ThemeProvider theme={teemioTheme}>
         <html lang="en">
           <head>
-            <meta name="viewport" content="initial-scale=1, width=device-width" />
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
           </head>
           <body>
             <div className="navbar">

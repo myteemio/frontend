@@ -1,3 +1,4 @@
+import { Skeleton } from '@mui/material';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 export function ActivityLocation(props: { lat: number; lng: number }) {
@@ -22,6 +23,6 @@ export function ActivityLocation(props: { lat: number; lng: number }) {
       <Marker position={{ lat: props.lat, lng: props.lng }} />
     </GoogleMap>
   ) : (
-    <></>
+    <Skeleton animation="wave" width={'100%'} />
   );
 }

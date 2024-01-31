@@ -50,10 +50,11 @@ export default function Home() {
               PLANLÆG DIT NÆSTE TEAMEVENT
             </Typography>
             <Typography variant="body1" marginTop={2}>
-              Med Teemio kan du helt gratis planlægge dit næste teamevent! Vi
-              samler det hele ét sted og sørger for at du som virksomhed får
-              minimum 5% rabat på all vores aktiviter - så du kan spare tid og
-              penge!
+              Med Teemio kan du nemt og uden omkostninger planlægge dit næste
+              teamarrangement! Alt samles på ét sted, hvilket gør det enkelt og
+              effektivt at organisere events skræddersyet til dit team. Print
+              helt gratis en event side der kan hænges op på kontoret, og
+              forbered dit team på en uforglemmelig dag!
             </Typography>
             <Box marginTop={4} display={'flex'} gap={2}>
               <Link href={'/planlaeg'}>

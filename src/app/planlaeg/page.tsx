@@ -81,9 +81,8 @@ export default function Planlaeg() {
   ];
 
   const [activities, setActivities] =
-    useState<{ name: string; price: number; id: number; top: string }[]>(
-      allActivites
-    );
+    useState<{ name: string; price: number; id: number; top: string }[]>(allActivites);
+
   const [addedActivities, setAddedActivities] = useState<
     { name: string; price: number; id: number; top: string }[]
   >([]);
@@ -136,21 +135,14 @@ export default function Planlaeg() {
   function handleDragOver(event: DragOverEvent) {
     if (event.over) {
       setModifiers([snapToGrid]);
-      const element = document.querySelectorAll(
-        "[data-activityid='" + event.active.id + "']"
-      );
+      const element = document.querySelectorAll("[data-activityid='" + event.active.id + "']");
       if (element.length > 0) {
         const firstElement = element[0];
         const droppableArea = document.getElementById('droppablecontainer');
         if (droppableArea) {
-          firstElement.setAttribute(
-            'style',
-            `width: ${droppableArea.clientWidth}px`
-          );
+          firstElement.setAttribute('style', `width: ${droppableArea.clientWidth}px`);
           if (firstElement.children.length > 0) {
-            const image = firstElement.querySelector(
-              '[data-activityimagecontainer]'
-            );
+            const image = firstElement.querySelector('[data-activityimagecontainer]');
 
             if (image) {
               image.setAttribute('style', 'visibility: hidden; height: 0px;');
@@ -160,9 +152,7 @@ export default function Planlaeg() {
       }
     } else {
       setModifiers([]);
-      const element = document.querySelectorAll(
-        "[data-activityid='" + event.active.id + "']"
-      );
+      const element = document.querySelectorAll("[data-activityid='" + event.active.id + "']");
       if (element.length > 0) {
         const firstElement = element[0];
         const placeholderWhileDropped = document.querySelectorAll(
@@ -170,17 +160,12 @@ export default function Planlaeg() {
         );
 
         if (placeholderWhileDropped.length > 0) {
-          const image = firstElement.querySelector(
-            '[data-activityimagecontainer]'
-          );
+          const image = firstElement.querySelector('[data-activityimagecontainer]');
 
           if (image) {
             image.setAttribute('style', 'visibility: visible; height: 80px;');
           }
-          firstElement.setAttribute(
-            'style',
-            `width: ${placeholderWhileDropped[0].clientWidth}px`
-          );
+          firstElement.setAttribute('style', `width: ${placeholderWhileDropped[0].clientWidth}px`);
         }
       }
     }
@@ -229,20 +214,15 @@ export default function Planlaeg() {
             })()
           : null}
       </DragOverlay>
-      <Box
-        width={'80%'}
-        marginLeft={'auto'}
-        marginRight={'auto'}
-        paddingBottom={4}
-      >
+      <Box width={'80%'} marginLeft={'auto'} marginRight={'auto'} paddingBottom={4}>
         <Box marginTop={6} marginBottom={6}>
           <Typography variant="h4" fontWeight={'bold'}>
             PLANLÆG DIT EVENT
           </Typography>
           <Typography variant="h6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor
-            justo non arcu aliquet posuere. Sed non justo massa. Interdum et
-            malesuada fames ac ante ipsum primis in faucibus.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu
+            aliquet posuere. Sed non justo massa. Interdum et malesuada fames ac ante ipsum primis
+            in faucibus.
           </Typography>
         </Box>
         <Grid container>
@@ -255,11 +235,7 @@ export default function Planlaeg() {
               alignItems={'center'}
               sx={{ backgroundColor: 'green' }}
             >
-              <Box
-                width={400}
-                sx={{ background: 'purple' }}
-                id="droppablecontainer"
-              >
+              <Box width={400} sx={{ background: 'purple' }} id="droppablecontainer">
                 <Droppable>
                   <Box className={styles.droppablecontainer}>
                     {timeSlots.map((v, i) => (
@@ -276,14 +252,9 @@ export default function Planlaeg() {
             <Typography variant="h5" textAlign={'center'}>
               AKTIVITETER
             </Typography>
-            <Typography
-              variant="body1"
-              textAlign={'center'}
-              marginTop={1}
-              marginBottom={4}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor
-              justo non arcu aliquet posuere.
+            <Typography variant="body1" textAlign={'center'} marginTop={1} marginBottom={4}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu
+              aliquet posuere.
             </Typography>
             <Box
               display={'flex'}
