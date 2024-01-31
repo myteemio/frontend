@@ -15,5 +15,8 @@ export const teemioTheme = createTheme({
       main: '#148c40',
       contrastText: '#fff',
     },
+    grey: {
+      500: '#919292'
+    }
   },
 });

@@ -7,12 +7,10 @@ import {
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
-  UniqueIdentifier,
   pointerWithin,
 } from '@dnd-kit/core';
-import { createSnapModifier, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { Box, Grid, Typography } from '@mui/material';
-import { TransitionEvent, useState } from 'react';
+import { useState } from 'react';
 import styles from './page.module.css';
 
 export default function Planlaeg() {
@@ -84,9 +82,10 @@ export default function Planlaeg() {
 
   const [activities, setActivities] =
     useState<{ name: string; price: number; id: number; top: string }[]>(allActivites);
-  const [addedActivities, setAddedActivities] = useState<{ name: string; price: number; id: number; top: string }[]>(
-    []
-  );
+
+  const [addedActivities, setAddedActivities] = useState<
+    { name: string; price: number; id: number; top: string }[]
+  >([]);
   const [activeId, setActiveId] = useState(-1);
   const [modifiers, setModifiers] = useState<any[]>([]);
 
@@ -101,7 +100,10 @@ export default function Planlaeg() {
         const findActive = activities.findIndex((v) => v.id === active.id);
         if (findActive !== -1) {
           console.log(event);
-          const toAdd = { ...activities[findActive], top: `${event.delta.y}px` };
+          const toAdd = {
+            ...activities[findActive],
+            top: `${event.delta.y}px`,
+          };
           setActivities(activities.toSpliced(findActive, 1));
           setAddedActivities([...addedActivities, toAdd]);
         }
@@ -109,10 +111,14 @@ export default function Planlaeg() {
     } else {
       // There is no over
       if (active && active.id) {
-        const foundActivity = addedActivities.findIndex((v) => v.id + 5000 === (active.id as number));
+        const foundActivity = addedActivities.findIndex(
+          (v) => v.id + 5000 === (active.id as number)
+        );
 
         if (foundActivity !== -1) {
-          const foundActivityToReAdd = allActivites.find((v) => v.id + 5000 === (active.id as number));
+          const foundActivityToReAdd = allActivites.find(
+            (v) => v.id + 5000 === (active.id as number)
+          );
           if (foundActivityToReAdd) {
             setActivities([...activities, foundActivityToReAdd]);
           }
@@ -167,7 +173,7 @@ export default function Planlaeg() {
 
   const gridSize = 30; // pixels
   function snapToGrid(args: any) {
-    const { over, transform } = args;
+    const { transform } = args;
 
     console.log(args);
 
@@ -214,8 +220,9 @@ export default function Planlaeg() {
             PLANLÆG DIT EVENT
           </Typography>
           <Typography variant="h6">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu aliquet posuere. Sed non
-            justo massa. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu
+            aliquet posuere. Sed non justo massa. Interdum et malesuada fames ac ante ipsum primis
+            in faucibus.
           </Typography>
         </Box>
         <Grid container>
@@ -246,7 +253,8 @@ export default function Planlaeg() {
               AKTIVITETER
             </Typography>
             <Typography variant="body1" textAlign={'center'} marginTop={1} marginBottom={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu aliquet posuere.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu
+              aliquet posuere.
             </Typography>
             <Box
               display={'flex'}

@@ -24,7 +24,8 @@ export const Activity = ({
   });
 
   const draggableStyle = {
-    transform: isDragged && transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transform:
+      isDragged && transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     cursor: 'pointer',
   };
 
@@ -42,7 +43,7 @@ export const Activity = ({
         sx={{ ...cardStyle, height: '192px' }}
         data-activityid={id}
         data-placeholder={placeholder}
-      ></Skeleton>
+      />
     );
   } else {
     return (

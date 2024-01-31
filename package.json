@@ -17,11 +17,15 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.19",
+    "@mui/x-date-pickers": "^6.19.0",
+    "@react-google-maps/api": "^2.19.2",
+    "dayjs": "^1.11.10",
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
     "sass": "^1.69.5",
-    "sharp": "^0.33.0"
+    "sharp": "^0.33.0",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -29,6 +33,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "typescript": "^5"
   }
 }
