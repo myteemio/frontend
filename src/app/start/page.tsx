@@ -1,4 +1,5 @@
 'use client';
+import { ActivitiesFilter } from '@/components/ActivitiesFilter/ActivitiesFilter';
 import { FrontPageActivity } from '@/components/FrontPageActivity/FrontPageActivity';
 import { ActivityGrid } from '@/components/StyledComponents/ActivityGrid';
 import { IActivity, useActivities } from '@/lib/useActivity';
@@ -30,6 +31,7 @@ export default function Start() {
         <Typography fontSize={{ xs: '12px', sm: '16px', xl: '24px' }}>
           Vælg de potentielle aktiviteter du ønsker at lave til dit event
         </Typography>
+        <ActivitiesFilter/>
       </Box>
       <Box display={'flex'} justifyContent={'center'} flexGrow={1}>
         <ActivityGrid container width={'95%'} pl={4} pr={4} spacing={5}>
