@@ -51,13 +51,18 @@ export function FrontPageActivity(props: {
       {!props.isLoading ? (
         <>
           <Box className={styles.flexContainer}>
-            <Typography
-              variant="h5"
-              fontWeight={'bold'}
-              fontSize={{ xl: '16px', sm: '24px', lg: '18px' }}
+            <Link
+              href={`/aktivitet/${props.activityUrl}`}
+              style={{ textDecoration: 'none', color: 'black' }}
             >
-              {props.name}
-            </Typography>
+              <Typography
+                variant="h5"
+                fontWeight={'bold'}
+                fontSize={{ xl: '16px', sm: '24px', lg: '18px' }}
+              >
+                {props.name}
+              </Typography>
+            </Link>
             <Box display={'flex'} alignItems={'center'} columnGap={2}>
               <Groups />
               <Typography>{`${props.persons}+`}</Typography>

@@ -56,27 +56,28 @@ const cities: string[] = [
 
 export function MultiSelectCities() {
   const [city, setCity] = useState<string[]>([]);
-  const searchParams = useSearchParams()
+
+  const searchParams = useSearchParams();
 
   const handleChange = (event: SelectChangeEvent<typeof city>) => {
     const {
-      target: { value},
+      target: { value },
     } = event;
     const newCityValue = typeof value === 'string' ? value.split(',') : value;
     setCity(newCityValue);
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParams.toString());
     if (city.length > 0) {
-      params.set('city', city.join(','))
-      window.history.replaceState(null, '', `?${params.toString()}`)
+      params.set('city', city.join(','));
+      window.history.replaceState(null, '', `?${params.toString()}`);
     } else {
-      console.log("test")
-      params.delete('city')
-      window.history.replaceState(null, '', `?${params.toString()}`)
+      console.log('test');
+      params.delete('city');
+      window.history.replaceState(null, '', `?${params.toString()}`);
     }
-  }, [city, searchParams])
+  }, [city, searchParams]);
 
   return (
     <div>

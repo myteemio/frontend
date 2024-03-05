@@ -9,6 +9,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 export default function Start() {
   const { activities, isLoading } = useActivities();
 
+
   return (
     <Box width="100%" minHeight={'3000px'}>
       <Box
@@ -31,7 +32,7 @@ export default function Start() {
         <Typography fontSize={{ xs: '12px', sm: '16px', xl: '24px' }}>
           Vælg de potentielle aktiviteter du ønsker at lave til dit event
         </Typography>
-        <ActivitiesFilter/>
+        <ActivitiesFilter />
       </Box>
       <Box display={'flex'} justifyContent={'center'} flexGrow={1}>
         <ActivityGrid container width={'95%'} pl={4} pr={4} spacing={5}>
