@@ -15,12 +15,28 @@ import {
   ClientRect,
 } from '@dnd-kit/core';
 import { Transform } from '@dnd-kit/utilities';
+import classNames from 'classnames';
+import Image from 'next/image';
+
+type ActivityDetailsT = {
+  title: string;
+  minPeople: number;
+  location: {
+    city: string;
+    lat: number;
+    lng: number;
+  };
+  startPrice: number;
+  image: string;
+  custom: boolean;
+};
 
 type AddedActivityT = {
   id: string;
   top: number;
   height: number;
   defaultDurationHours: number;
+  activity: ActivityDetailsT;
 };
 
 type AdjustedActivitiesT = AddedActivityT & {
@@ -30,38 +46,74 @@ type AdjustedActivitiesT = AddedActivityT & {
   leftOffset: number;
 };
 
-const timetableHours = 18;
-const onehourheight = 100 / 18;
+const timetableHours = 13;
+const onehourheight = 100 / timetableHours;
 const gridSnapInMinutes = 20;
 
 export default function Test() {
   const [timetable, setTimetable] = useState<{ hours: number; startTime: number }>({
     hours: timetableHours,
-    startTime: 6,
+    startTime: 8,
   });
   const [heightOfDroppableArea, setHeightOfDroppableArea] = useState<string>('100%');
-  const [activeElement, setActiveElement] = useState<AddedActivityT>();
+  const [activeElement, setActiveElement] = useState<AddedActivityT & { DraggedFrom: string }>();
   const [activities, setActivities] = useState<AddedActivityT[]>([
     {
       id: '1',
       top: 0,
       height: 0,
       defaultDurationHours: 1,
+      activity: {
+        custom: false,
+        image: '/images/activityImages/gokart.jpg',
+        location: {
+          city: 'København S',
+          lat: 25,
+          lng: 25,
+        },
+        minPeople: 4,
+        startPrice: 259,
+        title: 'GoKart Amager',
+      },
     },
   ]);
   const [adjustedActivities, setAdjustedActivities] = useState<AdjustedActivitiesT[]>([]);
   const [addedActivities, setAddedActivities] = useState<AddedActivityT[]>([
     {
       id: '2',
-      top: 0,
-      height: onehourheight,
-      defaultDurationHours: 1,
+      top: onehourheight * 8, // 16 til 20
+      height: onehourheight * 4,
+      defaultDurationHours: 4,
+      activity: {
+        custom: false,
+        image: '/images/activityImages/cookingclass.jpeg',
+        location: {
+          city: 'København Ø',
+          lat: 25,
+          lng: 25,
+        },
+        minPeople: 8,
+        startPrice: 599,
+        title: 'Cooking Class',
+      },
     },
     {
       id: '3',
-      top: 0,
+      top: onehourheight * 4,
       height: onehourheight * 2,
       defaultDurationHours: 2,
+      activity: {
+        custom: true,
+        image: '/images/activityImages/tedtalk.png',
+        location: {
+          city: 'Herlev',
+          lat: 25,
+          lng: 25,
+        },
+        minPeople: 0,
+        startPrice: 0,
+        title: 'TED Talk',
+      },
     },
   ]);
 
@@ -174,119 +226,128 @@ export default function Test() {
   }
 
   return (
-    <div className={styles.container}>
-      <DndContext
-        collisionDetection={pointerWithin}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragStart={handleDragStart}
-        onDragMove={handleDragMove}
-        id="dndcontext"
-      >
-        <div className={styles.leftside}>
-          <ActivityTimeslotsDroppable
-            hours={timetable.hours}
-            startTime={timetable.startTime}
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              alignContent: 'flex-start',
-              position: 'relative',
-            }}
-          >
-            {adjustedActivities.map((item, i) => (
-              <ActivityDropped
-                key={i}
-                id={item.id}
-                details={item}
-                duration={convertProcentageHeightToHours(item.height, timetable.hours)}
-                timeslot={convertPositionAndHeightToTimeslots(
-                  item.height,
-                  item.top > 0 ? item.top : 0,
-                  timetable.hours,
-                  timetable.startTime
-                )}
-                style={{
-                  position: 'absolute',
-                  width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
-                  height: `${item.height}%`,
-                  top: item.top > 0 ? `${item.top}%` : `0%`,
-                  left: `${item.leftOffset}%`,
-                  border: item.isIncorrect ? '1px solid red' : 'none',
-                }}
-                isPlaceholder={activeElement?.id === item.id}
-                onResize={(deltaHeight, handlePulled) => {
-                  const heightOfAreaInPixels = Number(heightOfDroppableArea.replace(/\D/g, ''));
-                  let newHeightInPercentage = (deltaHeight / heightOfAreaInPixels) * 100;
+    <div className={styles.outsidecontainer}>
+      <div className={styles.top}>
+        <p className={styles.title}>PLANLÆG DIT EVENT</p>
+        <p className={styles.description}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tempor justo non arcu aliquet posuere. Sed non
+          justo massa. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+        </p>
+      </div>
+      <div className={styles.container}>
+        <DndContext
+          collisionDetection={pointerWithin}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onDragStart={handleDragStart}
+          onDragMove={handleDragMove}
+          id="dndcontext"
+        >
+          <div className={styles.leftside}>
+            <ActivityTimeslotsDroppable
+              hours={timetable.hours}
+              startTime={timetable.startTime}
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                alignContent: 'flex-start',
+                position: 'relative',
+              }}
+            >
+              {adjustedActivities.map((item, i) => (
+                <ActivityDropped
+                  key={i}
+                  id={item.id}
+                  details={item}
+                  duration={convertProcentageHeightToHours(item.height, timetable.hours)}
+                  timeslot={convertPositionAndHeightToTimeslots(
+                    item.height,
+                    item.top > 0 ? item.top : 0,
+                    timetable.hours,
+                    timetable.startTime
+                  )}
+                  style={{
+                    position: 'absolute',
+                    width: item.overlapCount > 0 ? `${100 / (item.overlapCount + 1) - item.overlapCount}%` : '100%',
+                    height: `${item.height}%`,
+                    top: item.top > 0 ? `${item.top}%` : `0%`,
+                    left: `${item.leftOffset}%`,
+                    border: item.isIncorrect ? '1px solid red' : 'none',
+                  }}
+                  isPlaceholder={activeElement?.id === item.id}
+                  onResize={(deltaHeight, handlePulled) => {
+                    const heightOfAreaInPixels = Number(heightOfDroppableArea.replace(/\D/g, ''));
+                    let newHeightInPercentage = (deltaHeight / heightOfAreaInPixels) * 100;
 
-                  const snapInterval = onehourheight / (60 / gridSnapInMinutes);
-                  newHeightInPercentage = Math.round(newHeightInPercentage / snapInterval) * snapInterval;
+                    const snapInterval = onehourheight / (60 / gridSnapInMinutes);
+                    newHeightInPercentage = Math.round(newHeightInPercentage / snapInterval) * snapInterval;
 
-                  // Ensure new height is not below the minimum height
-                  const minHeightPercentage = onehourheight;
-                  const newHeight = Math.max(item.height + newHeightInPercentage, minHeightPercentage);
+                    // Ensure new height is not below the minimum height
+                    const minHeightPercentage = onehourheight;
+                    const newHeight = Math.max(item.height + newHeightInPercentage, minHeightPercentage);
 
-                  // Prevent resizing below the minimum height and moving the top down in such cases
-                  if (newHeight < minHeightPercentage) {
-                    return;
-                  }
-
-                  if (handlePulled === 'upper') {
-                    const newTopInPercentage = item.top - newHeightInPercentage;
-
-                    // Ensure the top is not less than 0
-                    const newTop = Math.max(newTopInPercentage, 0);
-
-                    console.log(newHeight);
-                    if (newTop > item.top && newHeight <= onehourheight) {
+                    // Prevent resizing below the minimum height and moving the top down in such cases
+                    if (newHeight < minHeightPercentage) {
                       return;
                     }
 
-                    setAddedActivities((prevActivities) =>
-                      prevActivities.map((activity) =>
-                        activity.id === item.id ? { ...activity, height: newHeight, top: newTop } : activity
-                      )
-                    );
-                  }
+                    if (handlePulled === 'upper') {
+                      const newTopInPercentage = item.top - newHeightInPercentage;
 
-                  if (handlePulled === 'lower') {
-                    // Existing logic for resizing from the bottom, now with height snapping
-                    setAddedActivities((prevActivities) =>
-                      prevActivities.map((activity) =>
-                        activity.id === item.id ? { ...activity, height: newHeight } : activity
-                      )
-                    );
-                  }
-                }}
+                      // Ensure the top is not less than 0
+                      const newTop = Math.max(newTopInPercentage, 0);
+
+                      console.log(newHeight);
+                      if (newTop > item.top && newHeight <= onehourheight) {
+                        return;
+                      }
+
+                      setAddedActivities((prevActivities) =>
+                        prevActivities.map((activity) =>
+                          activity.id === item.id ? { ...activity, height: newHeight, top: newTop } : activity
+                        )
+                      );
+                    }
+
+                    if (handlePulled === 'lower') {
+                      // Existing logic for resizing from the bottom, now with height snapping
+                      setAddedActivities((prevActivities) =>
+                        prevActivities.map((activity) =>
+                          activity.id === item.id ? { ...activity, height: newHeight } : activity
+                        )
+                      );
+                    }
+                  }}
+                />
+              ))}
+            </ActivityTimeslotsDroppable>
+          </div>
+          <div className={styles.rightside}>
+            <ActivityDroppable>
+              {activities.map((v, i) => (
+                <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id} />
+              ))}
+            </ActivityDroppable>
+          </div>
+          <DragOverlay
+            modifiers={[customRestrictToParent, customSnapToGrid]}
+            style={{
+              height: heightOfDroppableArea,
+            }}
+          >
+            {/* This magic 85% is just so the overlay will match the height of the element dragged*/}
+            {activeElement ? (
+              <ActivityBeingDragged
+                details={activeElement}
+                style={{ height: activeElement.height > 0 ? `${activeElement.height}%` : 'auto' }}
+                id={`drag-${activeElement.id}`}
               />
-            ))}
-          </ActivityTimeslotsDroppable>
-        </div>
-        <div className={styles.rightside}>
-          <ActivityDroppable>
-            {activities.map((v, i) => (
-              <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id} />
-            ))}
-          </ActivityDroppable>
-        </div>
-        <DragOverlay
-          modifiers={[customRestrictToParent, customSnapToGrid]}
-          style={{
-            height: heightOfDroppableArea,
-          }}
-        >
-          {/* This magic 85% is just so the overlay will match the height of the element dragged*/}
-          {activeElement ? (
-            <ActivityBeingDragged
-              details={activeElement}
-              style={{ height: activeElement.height > 0 ? `${activeElement.height}%` : 'auto' }}
-              id={`drag-${activeElement.id}`}
-            />
-          ) : undefined}
-        </DragOverlay>
-      </DndContext>
+            ) : undefined}
+          </DragOverlay>
+        </DndContext>
+      </div>
     </div>
   );
 
@@ -315,6 +376,12 @@ export default function Test() {
 
       if (item && overElement) {
         if (over.id === 'activitytimeslotsdroppable') {
+          {
+            if (active.data.current && active.data.current.location === over.id) {
+              // when dragged to the same
+            }
+          }
+
           // Set the size of drag element correctly
           // must fix the background-color and shits here...
 
@@ -352,7 +419,7 @@ export default function Test() {
         // Item dropped already. Look at the addedactivities
         const foundItem = adjustedActivities.find((v) => v.id === event.active.id);
         if (foundItem) {
-          setActiveElement(foundItem);
+          setActiveElement({ ...foundItem, DraggedFrom: 'activitytimeslotsdroppable' });
           return;
         }
       }
@@ -362,7 +429,7 @@ export default function Test() {
         const foundItem = activities.find((v) => v.id === event.active.id);
 
         if (foundItem) {
-          setActiveElement(foundItem);
+          setActiveElement({ ...foundItem, DraggedFrom: 'activitydroppable' });
           return;
         }
       }
@@ -449,6 +516,7 @@ export default function Test() {
             top: relativeTopPosition,
             defaultDurationHours:
               active.data.current?.activitydetails.defaultDurationHours ?? activeElement?.defaultDurationHours ?? 1,
+            activity: active.data.current?.activitydetails.activity,
           },
         ];
 
@@ -490,6 +558,7 @@ export default function Test() {
           defaultDurationHours: 1,
           height: 0,
           top: 0,
+          activity: active.data.current?.activitydetails.activity,
         } as AddedActivityT,
       ]);
 
@@ -560,7 +629,7 @@ function ActivityDroppable({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div className={styles.droppableAreas} ref={setNodeRef} id="activitydroppable">
+    <div className={classNames(styles.activitygrid)} ref={setNodeRef} id="activitydroppable">
       {children}
     </div>
   );
@@ -592,8 +661,20 @@ function Activity({
   };
 
   return (
-    <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes} id={id}>
-      <p style={{ margin: 0, padding: 0, visibility: isPlaceholder ? 'hidden' : 'visible' }}>Activity to drop {id}</p>
+    <div ref={setNodeRef} className={styles.activityouter} style={internalstyle} {...listeners} {...attributes} id={id}>
+      <div className={styles.activityinner} style={{ visibility: isPlaceholder ? 'hidden' : 'visible' }}>
+        <div className={styles.locationAndPeople}>
+          <div className={styles.peoplecontainer}>
+            <div className={styles.people}>👥 {details.activity.minPeople}+</div>
+          </div>
+          <div className={styles.locationcontainer}>{details.activity.location.city}</div>
+        </div>
+        <div className={styles.activityImage}>
+          <Image src={details.activity.image} fill alt={details.activity.title} />
+        </div>
+        <p className={styles.activitytitle}>{details.activity.title}</p>
+        <p className={styles.activityprice}>Fra {details.activity.startPrice} dkk pr. person</p>
+      </div>
     </div>
   );
 }
@@ -605,7 +686,7 @@ function ActivityBeingDragged({
 }: {
   id: string;
   style: React.CSSProperties;
-  details: AddedActivityT;
+  details: AddedActivityT & { DraggedFrom: string };
 }) {
   const { setNodeRef, listeners, attributes } = useDraggable({
     id: id,
@@ -621,13 +702,49 @@ function ActivityBeingDragged({
     ...style,
   };
 
-  return (
-    <div ref={setNodeRef} style={internalstyle} {...listeners} {...attributes} id={id}>
-      <p style={{ margin: 0, padding: 0 }}>
-        Activity being dragged {id} (height: {style.height})
-      </p>
-    </div>
-  );
+  if (details.DraggedFrom === 'activitydroppable') {
+    return (
+      <div
+        ref={setNodeRef}
+        className={styles.activityouterdragged}
+        style={internalstyle}
+        {...listeners}
+        {...attributes}
+        id={id}
+      >
+        <div className={styles.activityinner}>
+          <div className={styles.locationAndPeople}>
+            <div className={styles.peoplecontainer}>
+              <div className={styles.people}>👥 {details.activity.minPeople}+</div>
+            </div>
+            <div className={styles.locationcontainer}>{details.activity.location.city}</div>
+          </div>
+          <div className={styles.activityImage}>
+            <Image src={details.activity.image} fill alt={details.activity.title} />
+          </div>
+          <p className={styles.activitytitle}>{details.activity.title}</p>
+          <p className={styles.activityprice}>Fra {details.activity.startPrice} dkk pr. person</p>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        ref={setNodeRef}
+        className={classNames(styles.activityouterdragged, styles.activityouterdraggedmall)}
+        style={internalstyle}
+        {...listeners}
+        {...attributes}
+        id={id}
+      >
+        <div className={styles.activityinner}>
+          <p className={classNames(styles.activitytitle, styles.activitytitlesmall)}>
+            {details.activity.title} - Fra {details.activity.startPrice} dkk pr. person
+          </p>
+        </div>
+      </div>
+    );
+  }
 }
 
 function ActivityDropped({
