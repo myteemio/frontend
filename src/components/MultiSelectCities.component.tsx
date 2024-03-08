@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Box,
   Checkbox,
   FormControl,
   InputLabel,
@@ -59,8 +58,7 @@ export function MultiSelectCities(props: { cities: string[]; citiesLoading: bool
   }, [city, searchParams, pathname, router]);
 
   return (
-    <Box>
-      <FormControl sx={{ width: 300 }}>
+      <FormControl fullWidth>
         <InputLabel id="city-multiple-checkbox-label">Hvor?</InputLabel>
         <Select
           labelId="city-multiple-checkbox-label"
@@ -80,6 +78,5 @@ export function MultiSelectCities(props: { cities: string[]; citiesLoading: bool
           ))}
         </Select>
       </FormControl>
-    </Box>
   );
 }

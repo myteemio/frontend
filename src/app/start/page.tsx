@@ -7,7 +7,13 @@ import { Autocomplete, Box, Slider, TextField, Typography } from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getActivitySearchOptions } from '../utils/activity';
+import {
+  filterActivitiesByCity,
+  filterActivitiesByName,
+  filterActivitiesByPrice,
+  getActivitySearchOptions,
+} from '../utils/activity';
+import { StyledBox } from '@/components/StyledComponents/FiltersBox';
 
 export default function Start() {
   const { activities, isLoading } = useActivities();
@@ -35,20 +41,12 @@ export default function Start() {
   useEffect(() => {
     const cities = searchParams.get('city');
     const selectedCities = cities ? cities.split(',') : [];
-    const filteredCities = activities?.activities.filter((activity) =>
-      selectedCities.length > 0 ? selectedCities.includes(activity.address.city) : true
-    );
-    const filteredName = filteredCities?.filter((activity) =>
-      search === '' ? filteredCities : activity.name.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const filtered = filteredName?.filter((activity) =>
-      activityPricesRange.length === 0
-        ? activity.price >= activityPrices[0] && activity.price <= activityPrices[1]
-        : activity.price >= activityPricesRange[0] && activity.price <= activityPricesRange[1]
-    );
-
-    setFilteredActivities(filtered || []);
+    if (activities?.activities) {
+      const filterByCities = filterActivitiesByCity(activities?.activities, selectedCities);
+      const filterByName = filterActivitiesByName(filterByCities, search);
+      const filtered = filterActivitiesByPrice(filterByName, activityPricesRange, activityPrices);
+      setFilteredActivities(filtered || []);
+    }
   }, [activities, search, activityPricesRange, activityPrices, searchParams]);
 
   return (
@@ -73,20 +71,23 @@ export default function Start() {
         <Typography fontSize={{ xs: '12px', sm: '16px', xl: '24px' }}>
           Vælg de potentielle aktiviteter du ønsker at lave til dit event
         </Typography>
-        <Box display={'flex'} justifyContent={'space-between'} height={200} width={700}>
-          <Autocomplete
-            clearOnEscape
-            clearOnBlur={false}
-            id="combo-box-demo"
-            options={activityNames}
-            sx={{ width: 700 }}
-            renderInput={(params) => <TextField {...params} label="Søg Aktiviteter" />}
-            onChange={(_, value) => {
-              setSearch(value || '');
-            }}
-          />
-          <MultiSelectCities cities={activityCities} citiesLoading={citiesLoading} />
-          <Box sx={{ width: 500 }}>
+        <StyledBox>
+          <Box width={'50%'}>
+            <Autocomplete
+              clearOnEscape
+              clearOnBlur={false}
+              id="combo-box-demo"
+              options={activityNames}
+              renderInput={(params) => <TextField {...params} label="Søg Aktiviteter" />}
+              onChange={(_, value) => {
+                setSearch(value || '');
+              }}
+            />
+          </Box>
+          <Box sx={{width: {xs: '50%', sm: '50%', md: '25%'}}}>
+            <MultiSelectCities cities={activityCities} citiesLoading={citiesLoading} />
+          </Box>
+          <Box width={'25%'}>
             <Slider
               step={1}
               value={activityPricesRange.length === 0 ? activityPrices : activityPricesRange}
@@ -104,13 +105,13 @@ export default function Start() {
               </Typography>
             </Box>
           </Box>
-        </Box>
+        </StyledBox>
       </Box>
       <Box display={'flex'} justifyContent={'center'} flexGrow={1}>
         <ActivityGrid container width={'95%'} pl={4} pr={4} spacing={5}>
           {filteredActivities.map((activity: IActivity, i) => {
             return (
-              <Grid2 key={i} sm={12} md={6} lg={4} xl={3}>
+              <Grid2 key={i} xs={12} sm={6} md={6} lg={4} xl={3}>
                 <FrontPageActivity
                   name={activity.name}
                   city={activity.address.city}

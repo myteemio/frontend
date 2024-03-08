@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import styles from './FrontPageActivity.module.css';
-import { Box, Button, Checkbox, Skeleton, Typography, useTheme } from '@mui/material';
+import { Box, Button, Checkbox, Skeleton, Typography, styled, useTheme } from '@mui/material';
 import { Groups } from '@mui/icons-material';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -22,6 +22,24 @@ export function FrontPageActivity(props: {
   const handleChange = () => {
     setChecked(!checked);
   };
+
+  const StyledTypography = styled(Typography)(({ theme }) => ({
+    fontSize: '16px',
+    fontWeight: 'bold',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+
+    [theme.breakpoints.up('xs')]: {
+      fontsize: '14px',
+    },
+    [theme.breakpoints.up('sm')]: {
+      fontsize: '24px',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontsize: '18px',
+    },
+  }));
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
@@ -51,32 +69,38 @@ export function FrontPageActivity(props: {
       {!props.isLoading ? (
         <>
           <Box className={styles.flexContainer}>
-            <Link
-              href={`/aktivitet/${props.activityUrl}`}
-              style={{ textDecoration: 'none', color: 'black' }}
-            >
-              <Typography
-                variant="h5"
-                fontWeight={'bold'}
-                fontSize={{ xl: '16px', sm: '24px', lg: '18px' }}
+            <Box width={'80%'}>
+              <Link
+                href={`/aktivitet/${props.activityUrl}`}
+                style={{ textDecoration: 'none', color: 'black' }}
               >
-                {props.name}
-              </Typography>
-            </Link>
-            <Box display={'flex'} alignItems={'center'} columnGap={2}>
-              <Groups />
-              <Typography>{`${props.persons}+`}</Typography>
+                <StyledTypography variant="h5">{props.name}</StyledTypography>
+              </Link>
+            </Box>
+            <Box
+              width={'20%'}
+              display={'flex'}
+              justifyContent={'flex-end'}
+              alignItems={'center'}
+              columnGap={{ xs: 1, md: 2 }}
+            >
+              <Groups sx={{ fontSize: { sm: '16px', md: '24px' } }} />
+              <StyledTypography
+                sx={{ fontWeight: 'regular', whiteSpace: 'normal', overflow: 'visible' }}
+              >{`${props.persons}+`}</StyledTypography>
             </Box>
           </Box>
-          <Typography color={theme.palette.grey[500]}>{props.city}</Typography>
+          <StyledTypography sx={{ fontWeight: 'regular' }} color={theme.palette.grey[500]}>
+            {props.city}
+          </StyledTypography>
           <Box className={styles.flexContainer} mb={1}>
-            <Typography variant="h6" color={'primary'} fontWeight={'bold'}>
+            <StyledTypography variant="h6" color={'primary'} fontWeight={'bold'}>
               {`${props.price} DKK pr. person`}
-            </Typography>
+            </StyledTypography>
             <Box display={'flex'} alignItems={'center'} columnGap={2}>
-              <Typography color={'primary'} fontWeight={'bold'}>
+              <StyledTypography color={'primary'} fontWeight={'bold'}>
                 Spar 16%
-              </Typography>
+              </StyledTypography>
             </Box>
           </Box>
           <Button onClick={handleChange} variant="contained">
