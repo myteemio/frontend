@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Box,
   Checkbox,
   FormControl,
   InputLabel,
@@ -10,7 +11,7 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const ITEM_HEIGHT = 48;
@@ -24,38 +25,11 @@ const MenuProps = {
   },
 };
 
-const cities: string[] = [
-  'Albertslund',
-  'Ballerup',
-  'Brøndby',
-  'Dragør',
-  'Frederiksberg',
-  'Furesø',
-  'Gentofte',
-  'Gladsaxe',
-  'Glostrup',
-  'Greve',
-  'Herlev',
-  'Hvidovre',
-  'Høje-Taastrup',
-  'Ishøj',
-  'København',
-  'København K',
-  'København N',
-  'København NV',
-  'København S',
-  'København SV',
-  'København Ø',
-  'København V',
-  'Lyngby-Taarbæk',
-  'Rudersdal',
-  'Rødovre',
-  'Tårnby',
-  'Vallensbæk',
-];
-
-export function MultiSelectCities() {
+export function MultiSelectCities(props: { cities: string[]; citiesLoading: boolean }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [city, setCity] = useState<string[]>([]);
+  const [allCities, setAllCities] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
 
@@ -68,19 +42,24 @@ export function MultiSelectCities() {
   };
 
   useEffect(() => {
+    if (!props.citiesLoading) {
+      setAllCities(props.cities);
+    }
+  }, [props.cities, props.citiesLoading]);
+
+  useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     if (city.length > 0) {
       params.set('city', city.join(','));
-      window.history.replaceState(null, '', `?${params.toString()}`);
+      router.push(pathname + '?' + params.toString());
     } else {
-      console.log('test');
       params.delete('city');
-      window.history.replaceState(null, '', `?${params.toString()}`);
+      router.push(pathname + '?' + params.toString());
     }
-  }, [city, searchParams]);
+  }, [city, searchParams, pathname, router]);
 
   return (
-    <div>
+    <Box>
       <FormControl sx={{ width: 300 }}>
         <InputLabel id="city-multiple-checkbox-label">Hvor?</InputLabel>
         <Select
@@ -93,14 +72,14 @@ export function MultiSelectCities() {
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
         >
-          {cities.map((location) => (
-            <MenuItem key={location} value={location}>
+          {allCities.map((location, index) => (
+            <MenuItem key={`${location}${index}`} value={location}>
               <Checkbox checked={city.indexOf(location) > -1} />
               <ListItemText primary={location} />
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }
