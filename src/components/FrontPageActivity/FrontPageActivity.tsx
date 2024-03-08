@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import styles from './FrontPageActivity.module.css';
-import { Box, Button, Checkbox, Skeleton, Typography, styled, useTheme } from '@mui/material';
+import { Box, Button, Checkbox, Skeleton, useTheme } from '@mui/material';
 import { Groups } from '@mui/icons-material';
 import { useState } from 'react';
 import Link from 'next/link';
+import { StyledTypography } from '../StyledComponents/ActivityTypography';
 
 export function FrontPageActivity(props: {
   name: string;
@@ -22,24 +23,6 @@ export function FrontPageActivity(props: {
   const handleChange = () => {
     setChecked(!checked);
   };
-
-  const StyledTypography = styled(Typography)(({ theme }) => ({
-    fontSize: '16px',
-    fontWeight: 'bold',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-
-    [theme.breakpoints.up('xs')]: {
-      fontsize: '14px',
-    },
-    [theme.breakpoints.up('sm')]: {
-      fontsize: '24px',
-    },
-    [theme.breakpoints.up('md')]: {
-      fontsize: '18px',
-    },
-  }));
 
   return (
     <Box display={'flex'} flexDirection={'column'}>

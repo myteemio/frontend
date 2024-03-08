@@ -61,14 +61,19 @@ export default function Start() {
         mb={5}
       >
         <Typography
-          fontSize={{ xs: '24px', sm: '48px', xl: '64px' }}
+          fontSize={{ xs: '32px', sm: '48px', xl: '64px' }}
           variant="h3"
           color={'primary'}
           fontWeight={'bold'}
         >
           Vælg Aktiviteter
         </Typography>
-        <Typography fontSize={{ xs: '12px', sm: '16px', xl: '24px' }}>
+        <Typography
+          textAlign={'center'}
+          width={'80%'}
+          fontSize={{xs: '12px', sm: '16px', md: '18px'}}
+          sx={{ fontWeight: 'regular', whiteSpace: 'normal' }}
+        >
           Vælg de potentielle aktiviteter du ønsker at lave til dit event
         </Typography>
         <StyledBox>
@@ -84,7 +89,7 @@ export default function Start() {
               }}
             />
           </Box>
-          <Box sx={{width: {xs: '50%', sm: '50%', md: '25%'}}}>
+          <Box sx={{ width: { xs: '50%', sm: '50%', md: '25%' } }}>
             <MultiSelectCities cities={activityCities} citiesLoading={citiesLoading} />
           </Box>
           <Box width={'25%'}>
