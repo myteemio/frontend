@@ -26,37 +26,22 @@ export function FrontPageActivity(props: {
 
   return (
     <Box display={'flex'} flexDirection={'column'}>
-      {!props.isLoading ? (
-        <Box className={styles.imageContainer} width={'100%'}>
-          <Link href={`/aktivitet/${props.activityUrl}`}>
-            <Image
-              className={styles.image}
-              width={380}
-              height={450}
-              objectFit="cover"
-              alt="goboat"
-              src={props.imgUrl}
-            />
-          </Link>
-          <Checkbox
-            checked={checked}
-            onChange={handleChange}
-            className={styles.checkBox}
-            sx={{ color: theme.palette.primary.main }}
-          />
-        </Box>
-      ) : (
-        <Skeleton height={'50%'} width={'100%'} animation="pulse" variant="rounded" />
-      )}
-
+      <Box className={styles.imageContainer} width={'100%'}>
+        <Link href={`/aktivitet/${props.activityUrl}`}>
+          <Image className={styles.image} width={380} height={450} alt="goboat" src={props.imgUrl} />
+        </Link>
+        <Checkbox
+          checked={checked}
+          onChange={handleChange}
+          className={styles.checkBox}
+          sx={{ color: theme.palette.primary.main }}
+        />
+      </Box>
       {!props.isLoading ? (
         <>
           <Box className={styles.flexContainer}>
             <Box width={'80%'}>
-              <Link
-                href={`/aktivitet/${props.activityUrl}`}
-                style={{ textDecoration: 'none', color: 'black' }}
-              >
+              <Link href={`/aktivitet/${props.activityUrl}`} style={{ textDecoration: 'none', color: 'black' }}>
                 <StyledTypography variant="h5">{props.name}</StyledTypography>
               </Link>
             </Box>

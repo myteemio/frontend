@@ -17,77 +17,55 @@ export default function Aktivitet({ params }: Props) {
   const { activity, isLoading } = useActivity(params.activityUrl);
 
   return (
-    activity && (
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        alignItems={'center'}
-        width={'100%'}
-        minHeight={'1500px'}
-      >
-        {!isLoading ? (
-          <Image
-            className={styles.image}
-            src={'/images/goboat.png'}
-            alt="activity"
-            width={500}
-            height={500}
-          />
-        ) : (
-          <StyledSkeleton animation="pulse" variant="rounded" />
-        )}
+    <Box display={'flex'} flexDirection={'column'} alignItems={'center'} width={'100%'} minHeight={'1500px'}>
+      {!isLoading ? (
+        <Image className={styles.image} src={'/images/goboat.png'} alt="activity" width={500} height={500} />
+      ) : (
+        <StyledSkeleton animation="pulse" variant="rounded" />
+      )}
 
-        <Typography className={styles.title} variant="h2">
-          {!isLoading ? activity?.name : <Skeleton animation="wave" />}
-        </Typography>
-        <Typography className={styles.description} variant="h5">
-          {!isLoading ? (
-            activity?.description
-          ) : (
-            <>
-              <Skeleton animation="wave" />
-              <Skeleton width={'90%'} animation="wave" />
-            </>
-          )}
-        </Typography>
+      <Typography className={styles.title} variant="h2">
+        {!isLoading ? activity?.name : <Skeleton animation="wave" />}
+      </Typography>
+      <Typography className={styles.description} variant="h5">
         {!isLoading ? (
-          <ActivityInfo
-            priceFrom={activity.price}
-            minPeople={activity.persons}
-            category={activity.category[0]} // TODO: Change this
-          />
+          activity?.description
         ) : (
-          <Skeleton animation="pulse" width={'50%'}>
-            <ActivityInfo
-              priceFrom={activity?.price}
-              minPeople={activity?.persons}
-              category={activity?.category[0]}
-            />
-          </Skeleton>
+          <>
+            <Skeleton animation="wave" />
+            <Skeleton width={'90%'} animation="wave" />
+          </>
         )}
-        {!isLoading ? (
-          <Card className={styles.mapContainer}>
-            <Box
-              className={styles.adressContainer}
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              width={'50%'}
-              height={'100%'}
-            >
-              <Box display={'flex'} height={'100%'} width={'80%'} columnGap={4}>
-                <LocationOnIcon className={styles.icon} color={'primary'} />
-                <Typography className={styles.address}>
-                  {`${activity?.address.address1}, ${activity?.address.zipcode} ${activity?.address.city}`}
-                </Typography>
-              </Box>
+      </Typography>
+      <ActivityInfo
+        priceFrom={activity?.price || 0}
+        minPeople={activity?.persons || 0}
+        category={activity?.category[0] || ''} // TODO: Change this
+        isLoading={isLoading}
+      />
+
+      {!isLoading && activity ? (
+        <Card className={styles.mapContainer}>
+          <Box
+            className={styles.adressContainer}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            width={'50%'}
+            height={'100%'}
+          >
+            <Box display={'flex'} height={'100%'} width={'80%'} columnGap={4}>
+              <LocationOnIcon className={styles.icon} color={'primary'} />
+              <Typography className={styles.address}>
+                {`${activity?.address.address1}, ${activity?.address.zipcode} ${activity?.address.city}`}
+              </Typography>
             </Box>
-            <ActivityLocation lat={activity?.location.lat} lng={activity?.location.long} />
-          </Card>
-        ) : (
-          <Skeleton animation="wave" width={'80%'} height={400} />
-        )}
-      </Box>
-    )
+          </Box>
+          <ActivityLocation lat={activity?.location.lat} lng={activity?.location.long} />
+        </Card>
+      ) : (
+        <Skeleton animation="wave" width={'80%'} height={500} />
+      )}
+    </Box>
   );
 }

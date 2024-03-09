@@ -16,7 +16,7 @@ export const teemioTheme = createTheme({
       contrastText: '#fff',
     },
     grey: {
-      500: '#919292'
-    }
+      500: '#919292',
+    },
   },
 });
