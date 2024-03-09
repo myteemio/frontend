@@ -7,12 +7,7 @@ import { Autocomplete, Box, Slider, TextField, Typography } from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  filterActivitiesByCity,
-  filterActivitiesByName,
-  filterActivitiesByPrice,
-  getActivitySearchOptions,
-} from '../utils/activity';
+import { filterActivityByCity, filterActivityByName, filterActivityByPrice, getActivitySearchOptions } from '../utils/activity';
 import { StyledBox } from '@/components/StyledComponents/FiltersBox';
 
 export default function Start() {
@@ -21,19 +16,17 @@ export default function Start() {
   const [citiesLoading, setCitiesLoading] = useState<boolean>(true);
   const [activityCities, setActivityCities] = useState<string[]>([]);
   const [activityNames, setActivityNames] = useState<string[]>([]);
-  const [activityPrices, setActivityPrices] = useState<number[]>([]);
+  const [activityPricesMinMax, setActivityPricesMinMax] = useState<number[]>([]);
   const [activityPricesRange, setActivityPricesRange] = useState<number[]>([]);
   const [search, setSearch] = useState<string>('');
   const [filteredActivities, setFilteredActivities] = useState<IActivity[]>([]);
 
   useEffect(() => {
     if (!isLoading && activities?.activities) {
-      const { cities, activityNames, activityPrices } = getActivitySearchOptions(
-        activities?.activities
-      );
+      const { cities, activityNames, activityPrices } = getActivitySearchOptions(activities?.activities);
       setActivityCities(cities.sort());
       setActivityNames(activityNames.sort());
-      setActivityPrices([Math.min(...activityPrices), Math.max(...activityPrices)]);
+      setActivityPricesMinMax([Math.min(...activityPrices), Math.max(...activityPrices)]);
       setCitiesLoading(false);
     }
   }, [isLoading, activities]);
@@ -42,36 +35,25 @@ export default function Start() {
     const cities = searchParams.get('city');
     const selectedCities = cities ? cities.split(',') : [];
     if (activities?.activities) {
-      const filterByCities = filterActivitiesByCity(activities?.activities, selectedCities);
-      const filterByName = filterActivitiesByName(filterByCities, search);
-      const filtered = filterActivitiesByPrice(filterByName, activityPricesRange, activityPrices);
-      setFilteredActivities(filtered || []);
+      const filtered = activities.activities
+        .filter((activity) => filterActivityByCity(activity, selectedCities))
+        .filter((activity) => filterActivityByName(activity, search))
+        .filter((activity) => filterActivityByPrice(activity, activityPricesRange, activityPricesMinMax));
+
+      setFilteredActivities(filtered);
     }
-  }, [activities, search, activityPricesRange, activityPrices, searchParams]);
+  }, [activities, search, activityPricesRange, activityPricesMinMax, searchParams]);
 
   return (
     <Box width="100%" minHeight={'3000px'}>
-      <Box
-        display={'flex'}
-        flexDirection={'column'}
-        width={'100%'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        mt={2}
-        mb={5}
-      >
-        <Typography
-          fontSize={{ xs: '32px', sm: '48px', xl: '64px' }}
-          variant="h3"
-          color={'primary'}
-          fontWeight={'bold'}
-        >
+      <Box display={'flex'} flexDirection={'column'} width={'100%'} alignItems={'center'} justifyContent={'center'} mt={2} mb={5}>
+        <Typography fontSize={{ xs: '32px', sm: '48px', xl: '64px' }} variant="h3" color={'primary'} fontWeight={'bold'}>
           Vælg Aktiviteter
         </Typography>
         <Typography
           textAlign={'center'}
           width={'80%'}
-          fontSize={{xs: '12px', sm: '16px', md: '18px'}}
+          fontSize={{ xs: '12px', sm: '16px', md: '18px' }}
           sx={{ fontWeight: 'regular', whiteSpace: 'normal' }}
         >
           Vælg de potentielle aktiviteter du ønsker at lave til dit event
@@ -95,18 +77,18 @@ export default function Start() {
           <Box width={'25%'}>
             <Slider
               step={1}
-              value={activityPricesRange.length === 0 ? activityPrices : activityPricesRange}
+              value={activityPricesRange.length === 0 ? activityPricesMinMax : activityPricesRange}
               valueLabelDisplay="auto"
               onChange={(_, value) => setActivityPricesRange(value as number[])}
-              min={activityPrices[0]}
-              max={activityPrices[1]}
+              min={activityPricesMinMax[0]}
+              max={activityPricesMinMax[1]}
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography variant="body2" sx={{ cursor: 'pointer' }}>
-                {activityPricesRange.length === 0 ? activityPrices[0] : activityPricesRange[0]} DKK
+                {activityPricesRange.length === 0 ? activityPricesMinMax[0] : activityPricesRange[0]} DKK
               </Typography>
               <Typography variant="body2" sx={{ cursor: 'pointer' }}>
-                {activityPricesRange.length === 0 ? activityPrices[1] : activityPricesRange[1]} DKK
+                {activityPricesRange.length === 0 ? activityPricesMinMax[1] : activityPricesRange[1]} DKK
               </Typography>
             </Box>
           </Box>
