@@ -1,3 +1,5 @@
+'use client'
+
 import { Typography, styled } from '@mui/material';
 
 export const StyledText = styled(Typography)(({ theme }) => ({
@@ -18,9 +20,6 @@ export const StyledText = styled(Typography)(({ theme }) => ({
 }));
 
 export const StyledHeader = styled(Typography)(({ theme }) => ({
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
   fontWeight: 'bold',
 
   [theme.breakpoints.up('xs')]: {

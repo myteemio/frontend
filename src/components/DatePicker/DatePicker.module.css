@@ -1,20 +1,9 @@
-.container {
-  height: 100%;
-  width: 100%;
-}
-
 .titleContainer {
   width: 100%;
   height: 20%;
   background-color: #f8f8f8;
   border-bottom: solid 1px #dddddd;
   padding: 8px;
-}
-
-.calenderContainer {
-  width: 55%;
-  height: 100%;
-  border-right: solid 1px #dddddd;
 }
 
 .dateContainer {
@@ -24,7 +13,7 @@
   align-items: center;
 }
 
-.deleteIcon{
+.deleteIcon {
   position: 'absolute';
   top: 2px;
   right: 4px;

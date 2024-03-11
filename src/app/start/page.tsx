@@ -13,7 +13,7 @@ import {
   filterActivityByPrice,
   getActivitySearchOptions,
 } from '../utils/activity';
-import { StyledBox } from '@/components/StyledComponents/FiltersBox';
+import { StyledBox } from '@/components/StyledComponents/FlexBox/FiltersBox';
 import { ActivitySkeleton } from '@/components/ActivitySkeleton.component';
 import { StyledHeader, StyledText } from '@/components/StyledComponents/Typography';
 

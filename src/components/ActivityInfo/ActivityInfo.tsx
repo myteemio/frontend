@@ -1,7 +1,7 @@
 import { Skeleton, ThemeProvider, Typography } from '@mui/material';
 import styles from './ActivityInfo.module.css';
 import { teemioTheme } from '@/styling/theme';
-import { StyledBox } from '../StyledComponents/ActivityBox';
+import { StyledBox } from '../StyledComponents/FlexBox/ActivityBox';
 import { StyledPaper } from '../StyledComponents/ActivityPaper';
 
 export default function ActivityInfo({

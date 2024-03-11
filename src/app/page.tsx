@@ -1,14 +1,6 @@
 import Image from 'next/image';
 import { Metadata } from 'next';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CardContent, Chip, Grid, Typography } from '@mui/material';
 import Link from 'next/link';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 
@@ -20,13 +12,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <Box
-        minWidth="100%"
-        minHeight={'100%'}
-        display={'flex'}
-        justifyContent={'center'}
-        alignItems={'center'}
-      >
+      <Box minWidth="100%" minHeight={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
         <Grid
           container
           flexWrap={'wrap'}
@@ -50,11 +36,9 @@ export default function Home() {
               PLANLÆG DIT NÆSTE TEAMEVENT
             </Typography>
             <Typography variant="body1" marginTop={2}>
-              Med Teemio kan du nemt og uden omkostninger planlægge dit næste
-              teamarrangement! Alt samles på ét sted, hvilket gør det enkelt og
-              effektivt at organisere events skræddersyet til dit team. Print
-              helt gratis en event side der kan hænges op på kontoret, og
-              forbered dit team på en uforglemmelig dag!
+              Med Teemio kan du nemt og uden omkostninger planlægge dit næste teamarrangement! Alt samles på ét sted,
+              hvilket gør det enkelt og effektivt at organisere events skræddersyet til dit team. Print helt gratis en
+              event side der kan hænges op på kontoret, og forbered dit team på en uforglemmelig dag!
             </Typography>
             <Box marginTop={4} display={'flex'} gap={2}>
               <Link href={'/planlaeg'}>
@@ -98,40 +82,25 @@ export default function Home() {
         paddingBottom={4}
         gap={2}
       >
-        <Card
-          variant="elevation"
-          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
-        >
+        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">
-              Vælg aktiviter, planlæg din dag og opret event!
-            </Typography>
+            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="elevation"
-          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
-        >
+        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">
-              Vælg aktiviter, planlæg din dag og opret event!
-            </Typography>
+            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
           </CardContent>
         </Card>
-        <Card
-          variant="elevation"
-          sx={{ backgroundColor: 'secondary.main', color: 'white' }}
-        >
+        <Card variant="elevation" sx={{ backgroundColor: 'secondary.main', color: 'white' }}>
           <CardContent sx={{ textAlign: 'center' }}>
             <LocalActivityIcon fontSize="large" color="primary" />
             <Typography variant="h6">Vælg aktiviter</Typography>
-            <Typography variant="body1">
-              Vælg aktiviter, planlæg din dag og opret event!
-            </Typography>
+            <Typography variant="body1">Vælg aktiviter, planlæg din dag og opret event!</Typography>
           </CardContent>
         </Card>
       </Box>

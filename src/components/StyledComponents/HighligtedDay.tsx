@@ -1,3 +1,5 @@
+'use client'
+
 import { styled } from '@mui/material';
 import { PickersDay } from '@mui/x-date-pickers';
 
