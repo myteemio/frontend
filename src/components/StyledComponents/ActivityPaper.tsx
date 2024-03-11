@@ -2,7 +2,7 @@
 
 import { Paper, styled } from "@mui/material";
 
-export const StyledPaper = styled(Paper)(({ theme }) => ({
+export const ActivityPaper = styled(Paper)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

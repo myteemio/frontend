@@ -1,6 +1,6 @@
 'use client';
 import { DatePicker } from '@/components/DatePicker/DatePicker';
-import { StyledBox } from '@/components/StyledComponents/FlexBox/CreateEventBox';
+import { EventBox } from '@/components/StyledComponents/FlexBox/CreateEventBox';
 import { UploadBox } from '@/components/StyledComponents/FlexBox/UploadBox';
 import { StyledEventHeader, StyledText } from '@/components/StyledComponents/Typography';
 import { Check, CloudUpload } from '@mui/icons-material';
@@ -32,9 +32,9 @@ export default function CreateEvent() {
       <StyledEventHeader color={'primary'} textAlign={'center'}>
         Opret dit event her
       </StyledEventHeader>
-      <StyledBox>
+      <EventBox>
         <Box width={'100%'} mb={4}>
-          <Paper square={false} elevation={3} sx={{ padding: 2, pb: 4, boxSizing: 'border-box' }}>
+          <Box sx={{ padding: 2, pb: 4, border: 'solid 1px #dddddd', borderRadius: '8px' }}>
             <Box component={'form'} mb={2}>
               <StyledText color={'primary'}>Event navn</StyledText>
               <TextField margin="dense" fullWidth placeholder="Padel X Marketing Event" required />
@@ -75,12 +75,12 @@ export default function CreateEvent() {
                 </UploadBox>
               </form>
             </Box>
-          </Paper>
+          </Box>
         </Box>
         <Box width={'100%'}>
           <DatePicker />
         </Box>
-      </StyledBox>
+      </EventBox>
     </>
   );
 }

@@ -13,7 +13,7 @@ import {
   filterActivityByPrice,
   getActivitySearchOptions,
 } from '../utils/activity';
-import { StyledBox } from '@/components/StyledComponents/FlexBox/FiltersBox';
+import { FiltersBox } from '@/components/StyledComponents/FlexBox/FiltersBox';
 import { ActivitySkeleton } from '@/components/ActivitySkeleton.component';
 import { StyledHeader, StyledText } from '@/components/StyledComponents/Typography';
 
@@ -64,20 +64,13 @@ export default function Start() {
       >
         {!isLoading ? (
           <>
-            <StyledHeader
-              variant="h3"
-              color={'primary'}
-            >
+            <StyledHeader variant="h3" color={'primary'}>
               Vælg Aktiviteter
             </StyledHeader>
-            <StyledText
-              textAlign={'center'}
-              width={'80%'}
-              sx={{ fontWeight: 'regular', whiteSpace: 'normal' }}
-            >
+            <StyledText textAlign={'center'} width={'80%'} sx={{ fontWeight: 'regular', whiteSpace: 'normal' }}>
               Vælg de potentielle aktiviteter du ønsker at lave til dit event
             </StyledText>
-            <StyledBox>
+            <FiltersBox>
               <Box width={'50%'}>
                 <Autocomplete
                   clearOnEscape
@@ -111,7 +104,7 @@ export default function Start() {
                   </Typography>
                 </Box>
               </Box>
-            </StyledBox>
+            </FiltersBox>
           </>
         ) : (
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'} width={'100vw'}>

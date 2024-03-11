@@ -2,7 +2,7 @@
 
 import { Box, styled } from '@mui/material';
 
-export const StyledBox = styled(Box)(({ theme }) => ({
+export const ActivityBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '80%',
   justifyContent: 'center',

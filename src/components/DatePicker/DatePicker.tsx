@@ -12,8 +12,8 @@ import { StyledIconButton } from '../StyledComponents/IconButton';
 import { StyledClearIcon } from '../StyledComponents/ClearIcon';
 import { HighlightedDay } from '../StyledComponents/HighligtedDay';
 import 'dayjs/locale/da';
-import { StyledBox } from '../StyledComponents/FlexBox/CalenderBox';
-import { StyledCard } from '../StyledComponents/DateCard';
+import { CalenderBox } from '../StyledComponents/FlexBox/CalenderBox';
+import { DateBox } from '../StyledComponents/FlexBox/DateBox';
 
 export interface HighlightedDay {
   formattedDate: string;
@@ -70,7 +70,7 @@ export function DatePicker() {
 
   return (
     <LocalizationProvider adapterLocale="da" dateAdapter={AdapterDayjs}>
-      <StyledCard elevation={3} sx={{ mb: 4 }}>
+      <DateBox sx={{ mb: 4, border: 'solid 1px #dddddd', borderRadius: '8px' }}>
         <Box className={styles.titleContainer}>
           <Typography
             className={styles.title}
@@ -89,14 +89,13 @@ export function DatePicker() {
             Vælg de mulige datoer eller tidspunker for dit event
           </Typography>
         </Box>
-        <StyledBox>
+        <CalenderBox>
           <DateCalendar
             className={styles.dateCalender}
             sx={{
               width: `calc(100% + 1px)`,
               height: '100%',
               overflow: 'auto',
-              borderBottom: 'solid 1px #dddddd',
               borderRight: 'solid 1px #dddddd',
               '& .MuiDayCalendar-slideTransition': {
                 minHeight: '215px',
@@ -193,8 +192,8 @@ export function DatePicker() {
               </Grid>
             ))}
           </Grid>
-        </StyledBox>
-      </StyledCard>
+        </CalenderBox>
+      </DateBox>
     </LocalizationProvider>
   );
 }

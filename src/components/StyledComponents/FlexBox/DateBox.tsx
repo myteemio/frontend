@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 
-export const StyledCard = styled(Card)(({ theme }) => ({
+export const DateBox = styled(Box)(({ theme }) => ({
   width: '100%',
   minHeight: '450px',
 

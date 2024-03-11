@@ -2,7 +2,7 @@
 
 import { Box, styled } from '@mui/material';
 
-export const StyledBox = styled(Box)(({ theme }) => ({
+export const FiltersBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '50%',
   justifyContent: 'center',

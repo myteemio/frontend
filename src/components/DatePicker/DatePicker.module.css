@@ -3,6 +3,8 @@
   height: 20%;
   background-color: #f8f8f8;
   border-bottom: solid 1px #dddddd;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
   padding: 8px;
 }
 
