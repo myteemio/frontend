@@ -1,5 +1,5 @@
 import { DatePicker } from '@/components/DatePicker/DatePicker';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export default function CreateEvent() {
   return (
@@ -9,6 +9,7 @@ export default function CreateEvent() {
       justifyContent={'center'}
       alignItems={'center'}
     >
+      <Typography>Opret dit event her</Typography>
       <DatePicker />
     </Box>
   );

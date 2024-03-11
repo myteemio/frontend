@@ -15,6 +15,7 @@ import {
 } from '../utils/activity';
 import { StyledBox } from '@/components/StyledComponents/FiltersBox';
 import { ActivitySkeleton } from '@/components/ActivitySkeleton.component';
+import { StyledHeader, StyledText } from '@/components/StyledComponents/Typography';
 
 export default function Start() {
   const { activities, isLoading } = useActivities();
@@ -63,22 +64,19 @@ export default function Start() {
       >
         {!isLoading ? (
           <>
-            <Typography
-              fontSize={{ xs: '32px', sm: '48px', xl: '64px' }}
+            <StyledHeader
               variant="h3"
               color={'primary'}
-              fontWeight={'bold'}
             >
               Vælg Aktiviteter
-            </Typography>
-            <Typography
+            </StyledHeader>
+            <StyledText
               textAlign={'center'}
               width={'80%'}
-              fontSize={{ xs: '12px', sm: '16px', md: '18px' }}
               sx={{ fontWeight: 'regular', whiteSpace: 'normal' }}
             >
               Vælg de potentielle aktiviteter du ønsker at lave til dit event
-            </Typography>
+            </StyledText>
             <StyledBox>
               <Box width={'50%'}>
                 <Autocomplete

@@ -6,7 +6,7 @@ import { Box, Button, Checkbox, Skeleton, useTheme } from '@mui/material';
 import { Groups } from '@mui/icons-material';
 import { useState } from 'react';
 import Link from 'next/link';
-import { StyledTypography } from '../StyledComponents/ActivityTypography';
+import { StyledText } from '../StyledComponents/Typography';
 
 export function FrontPageActivity(props: {
   name: string;
@@ -42,7 +42,7 @@ export function FrontPageActivity(props: {
           <Box className={styles.flexContainer}>
             <Box width={'80%'}>
               <Link href={`/aktivitet/${props.activityUrl}`} style={{ textDecoration: 'none', color: 'black' }}>
-                <StyledTypography variant="h5">{props.name}</StyledTypography>
+                <StyledText variant="h5">{props.name}</StyledText>
               </Link>
             </Box>
             <Box
@@ -53,22 +53,22 @@ export function FrontPageActivity(props: {
               columnGap={{ xs: 1, md: 2 }}
             >
               <Groups sx={{ fontSize: { sm: '16px', md: '24px' } }} />
-              <StyledTypography
+              <StyledText
                 sx={{ fontWeight: 'regular', whiteSpace: 'normal', overflow: 'visible' }}
-              >{`${props.persons}+`}</StyledTypography>
+              >{`${props.persons}+`}</StyledText>
             </Box>
           </Box>
-          <StyledTypography sx={{ fontWeight: 'regular' }} color={theme.palette.grey[500]}>
+          <StyledText sx={{ fontWeight: 'regular' }} color={theme.palette.grey[500]}>
             {props.city}
-          </StyledTypography>
+          </StyledText>
           <Box className={styles.flexContainer} mb={1}>
-            <StyledTypography variant="h6" color={'primary'} fontWeight={'bold'}>
+            <StyledText variant="h6" color={'primary'} fontWeight={'bold'}>
               {`${props.price} DKK pr. person`}
-            </StyledTypography>
+            </StyledText>
             <Box display={'flex'} alignItems={'center'} columnGap={2}>
-              <StyledTypography color={'primary'} fontWeight={'bold'}>
+              <StyledText color={'primary'} fontWeight={'bold'}>
                 Spar 16%
-              </StyledTypography>
+              </StyledText>
             </Box>
           </Box>
           <Button onClick={handleChange} variant="contained">
