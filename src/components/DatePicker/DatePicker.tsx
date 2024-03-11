@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Grid, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Typography, useTheme } from '@mui/material';
 import { DateCalendar, DatePickerSlotsComponentsProps, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
@@ -70,7 +70,7 @@ export function DatePicker() {
 
   return (
     <LocalizationProvider adapterLocale="da" dateAdapter={AdapterDayjs}>
-      <StyledCard elevation={3}>
+      <StyledCard elevation={3} sx={{ mb: 4 }}>
         <Box className={styles.titleContainer}>
           <Typography
             className={styles.title}
@@ -195,11 +195,6 @@ export function DatePicker() {
           </Grid>
         </StyledBox>
       </StyledCard>
-      <Box mt={4}>
-        <Button>test</Button>
-        <Button>test</Button>
-
-      </Box>
     </LocalizationProvider>
   );
 }

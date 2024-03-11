@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Typography, styled } from '@mui/material';
 
@@ -31,4 +31,8 @@ export const StyledHeader = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('xl')]: {
     fontSize: '64px',
   },
+}));
+
+export const StyledEventHeader = styled(StyledHeader)(({ theme }) => ({
+  marginTop: '24px',
 }));

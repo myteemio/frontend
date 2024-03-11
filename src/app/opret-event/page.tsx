@@ -1,34 +1,86 @@
-'use client'
+'use client';
 import { DatePicker } from '@/components/DatePicker/DatePicker';
 import { StyledBox } from '@/components/StyledComponents/FlexBox/CreateEventBox';
-import { StyledHeader, StyledText } from '@/components/StyledComponents/Typography';
-import { Box, Paper, TextField } from '@mui/material';
+import { UploadBox } from '@/components/StyledComponents/FlexBox/UploadBox';
+import { StyledEventHeader, StyledText } from '@/components/StyledComponents/Typography';
+import { Check, CloudUpload } from '@mui/icons-material';
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
 
 export default function CreateEvent() {
+  const [filename, setFilename] = useState('');
+
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    const file = e.target.files[0];
+    const { name } = file;
+    setFilename(name);
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      if (!evt?.target?.result) {
+        return;
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
+
   return (
-    <StyledBox p={2}>
-      <StyledHeader mb={4} color={'primary'}>
+    <>
+      <StyledEventHeader color={'primary'} textAlign={'center'}>
         Opret dit event her
-      </StyledHeader>
-      <Box width={'100%'} mb={4}>
-        <Paper square={false} elevation={3} sx={{ padding: '16px' }}>
-          <Box component={'form'} mb={2}>
-            <StyledText color={'primary'}>Event navn</StyledText>
-            <TextField margin="dense" fullWidth placeholder="Padel X Marketing Event" required />
-          </Box>
-          <Box component={'form'} mb={2}>
-            <StyledText color={'primary'}>Beskrivelse</StyledText>
-            <TextField placeholder="Beskrivelse..." margin="dense" fullWidth multiline rows={4} required />
-          </Box>
-          <Box component={'form'} mb={2}>
-            <StyledText color={'primary'}>Event navn</StyledText>
-            <TextField margin="dense" fullWidth required />
-          </Box>
-        </Paper>
-      </Box>
-      <Box width={'100%'}>
-        <DatePicker />
-      </Box>
-    </StyledBox>
+      </StyledEventHeader>
+      <StyledBox>
+        <Box width={'100%'} mb={4}>
+          <Paper square={false} elevation={3} sx={{ padding: 2, pb: 4, boxSizing: 'border-box' }}>
+            <Box component={'form'} mb={2}>
+              <StyledText color={'primary'}>Event navn</StyledText>
+              <TextField margin="dense" fullWidth placeholder="Padel X Marketing Event" required />
+            </Box>
+            <Box component={'form'} mb={2}>
+              <StyledText color={'primary'}>Beskrivelse</StyledText>
+              <TextField placeholder="Beskrivelse..." margin="dense" fullWidth multiline rows={4} required />
+            </Box>
+            <Box component={'form'} mb={2}>
+              <StyledText color={'primary'}>Event navn</StyledText>
+              <TextField margin="dense" fullWidth required />
+            </Box>
+            <Box mt={2}>
+              <form>
+                <StyledText mb={2} color={'primary'}>
+                  Tilføj Logo / Billede
+                </StyledText>
+                <UploadBox>
+                  <Button
+                    startIcon={<CloudUpload />}
+                    variant="outlined"
+                    component="label"
+                    sx={{ py: { xs: 6 }, px: { xs: 2, sm: 6 }, mr: { xs: 0, sm: 2 } }}
+                  >
+                    Upload Billede
+                    <input type="file" accept="image/*" hidden onChange={handleFileUpload} />
+                  </Button>
+                  <Box
+                    display={'flex'}
+                    width={{ xs: '100%', sm: '50%' }}
+                    columnGap={2}
+                    mt={2}
+                    alignSelf={{ xs: 'none', sm: 'center' }}
+                  >
+                    {filename ? <Check color="success" /> : null}
+                    <Typography>{filename}</Typography>
+                  </Box>
+                </UploadBox>
+              </form>
+            </Box>
+          </Paper>
+        </Box>
+        <Box width={'100%'}>
+          <DatePicker />
+        </Box>
+      </StyledBox>
+    </>
   );
 }
