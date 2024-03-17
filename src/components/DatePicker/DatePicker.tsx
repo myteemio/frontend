@@ -42,14 +42,7 @@ const ServerDay = (props: any) => {
     !props.outsideCurrentMonth &&
     highlightedDays.find((date: HighlightedDay) => date.formattedDate === day.format('YYYY-MM-DD'));
 
-  return (
-    <HighlightedDay
-      {...other}
-      outsideCurrentMonth={outsideCurrentMonth}
-      day={day}
-      selected={isSelected}
-    />
-  );
+  return <HighlightedDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} selected={isSelected} />;
 };
 
 export function DatePicker() {
@@ -63,9 +56,7 @@ export function DatePicker() {
     const dayNum = date.date();
     const month = date.format('MMM');
     const newHighlightedDays = [...highlightedDays];
-    const index = newHighlightedDays.findIndex(
-      (existingDate) => existingDate.formattedDate === formattedDate
-    );
+    const index = newHighlightedDays.findIndex((existingDate) => existingDate.formattedDate === formattedDate);
 
     if (index !== -1) {
       newHighlightedDays.splice(index, 1);
@@ -84,9 +75,7 @@ export function DatePicker() {
 
   function removeDate(date: HighlightedDay) {
     const newHighlightedDays = [...highlightedDays];
-    const index = newHighlightedDays.findIndex(
-      (existingDate) => existingDate.formattedDate === date.formattedDate
-    );
+    const index = newHighlightedDays.findIndex((existingDate) => existingDate.formattedDate === date.formattedDate);
     newHighlightedDays.splice(index, 1);
     setHighlitedDays(newHighlightedDays);
   }
@@ -132,7 +121,7 @@ export function DatePicker() {
             </Box>
             <Grid
               container
-              alignContent={'start'}
+              alignContent={'flex-start'}
               overflow={'auto'}
               height={'100%'}
               p={{ xs: '12px' }}
@@ -152,11 +141,7 @@ export function DatePicker() {
                   md={3}
                   xl={2.5}
                 >
-                  <StyledIconButton
-                    onClick={() => removeDate(date)}
-                    color="primary"
-                    aria-label="delete"
-                  >
+                  <StyledIconButton onClick={() => removeDate(date)} color="primary" aria-label="delete">
                     <StyledClearIcon />
                   </StyledIconButton>
                   <Typography

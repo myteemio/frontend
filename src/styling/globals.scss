@@ -6,3 +6,18 @@ html {
 .bodycontent {
   height: calc(100% - 64px); // 100% height minus the navbar height
 }
+
+.backgroundWhite {
+  background-color: white;
+}
+
+.draggedToTable {
+  height: auto;
+  background-color: #2e6ade !important;
+  border: 2px solid black !important;
+}
+
+.draggedToList {
+  height: auto;
+  background-color: white !important;
+}
