@@ -4,7 +4,7 @@ import { EventBox } from '@/components/StyledComponents/FlexBox/CreateEventBox';
 import { UploadBox } from '@/components/StyledComponents/FlexBox/UploadBox';
 import { StyledEventHeader, StyledText } from '@/components/StyledComponents/Typography';
 import { Check, CloudUpload } from '@mui/icons-material';
-import { Box, Button, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 
 export default function CreateEvent() {

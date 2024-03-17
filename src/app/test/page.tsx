@@ -13,10 +13,7 @@ import {
   DragMoveEvent,
   Modifier,
   ClientRect,
-  CollisionDetection,
-  closestCenter,
 } from '@dnd-kit/core';
-import { createSnapModifier, restrictToParentElement } from '@dnd-kit/modifiers';
 import { Transform } from '@dnd-kit/utilities';
 
 type AddedActivityT = {
@@ -226,7 +223,7 @@ export default function Test() {
         <div className={styles.rightside}>
           <ActivityDroppable>
             {activities.map((v, i) => (
-              <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id}/>
+              <Activity details={v} style={{}} key={i} id={v.id} isPlaceholder={activeElement?.id === v.id} />
             ))}
           </ActivityDroppable>
         </div>
@@ -656,7 +653,7 @@ function convertPositionAndHeightToTimeslots(
   return { start, end };
 }
 
-export const customRestrictToParent: Modifier = ({
+const customRestrictToParent: Modifier = ({
   containerNodeRect,
   draggingNodeRect,
   transform,

@@ -33,6 +33,6 @@ export const StyledHeader = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export const StyledEventHeader = styled(StyledHeader)(({ theme }) => ({
+export const StyledEventHeader = styled(StyledHeader)(({}) => ({
   marginTop: '24px',
 }));
